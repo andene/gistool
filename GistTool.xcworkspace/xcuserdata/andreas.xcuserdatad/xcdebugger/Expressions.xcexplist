@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "ViewController.openViewControllerWithLoader(GithubLoader, sender : NSButton?) throws -&gt; ():ViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "windowController.contentViewController a">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ViewController.tableView(NSTableView, viewForTableColumn : NSTableColumn?, row : Int) -&gt; NSView?:ViewController.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
