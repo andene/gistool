@@ -13,7 +13,6 @@ class FontAwesomeButton: NSButton {
     override func awakeFromNib() {
         super.awakeFromNib()
        
-
     }
     
     func updateTitle(title: String, fontSize: CGFloat) {

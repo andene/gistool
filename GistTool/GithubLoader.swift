@@ -32,14 +32,20 @@ class GithubLoader {
         
         let url = baseURL.URLByAppendingPathComponent(path)
         let request = oauth2.request(forURL: url)
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
         
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        print("Fetching URL \(url)")
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        
+        //print("Request sent \(request)")
         
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
         
             //let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)!
-
+            
+            //print("Resoponse \(response)")
+            //print("Data \(strData)")
             
             if nil != error {
                 dispatch_async(dispatch_get_main_queue()) {
@@ -65,8 +71,41 @@ class GithubLoader {
         
     }
     
-    func requestUserdata(callback: ((dict: [NSDictionary]?, error: ErrorType?) -> Void)) {
-        request("user", callback: callback)
+    
+    func requestSingle(path: String, callback: ((dict: NSDictionary?, error: ErrorType?) -> Void)) {
+        
+        let url = baseURL.URLByAppendingPathComponent(path)
+        let request = oauth2.request(forURL: url)
+        print("Fetching URL \(url)")
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        
+        //print("Request sent \(request)")
+        
+        NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+            if nil != error {
+                dispatch_async(dispatch_get_main_queue()) {
+                    callback(dict: nil, error: error)
+                }
+            } else {
+                do {
+                    let dict = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(dict: dict, error: nil)
+                    }
+                }
+                catch let error {
+                    print("Error \(error)")
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(dict: nil, error: error)
+                    }
+                }
+            }
+        }.resume()
+    }
+    
+    
+    func requestUserdata(callback: ((dict: NSDictionary?, error: ErrorType?) -> Void)) {
+        requestSingle("user", callback: callback)
     }
     
     func requestGists(callback: ((dict: [NSDictionary]?, error: ErrorType?) -> Void )) {

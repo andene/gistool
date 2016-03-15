@@ -22,9 +22,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     
     @IBOutlet weak var settingsButton: FontAwesomeButton!
+    @IBOutlet weak var refreshButton: FontAwesomeButton!
     @IBOutlet weak var gistTableView: NSTableView!
+    @IBOutlet weak var avatarImage: NSImageView!
+    @IBOutlet weak var username: NSButton!
+    
     var loader: GithubLoader!
     var gists: [NSDictionary]!
+    var user: NSDictionary!
     
     
     override func viewDidLoad() {
@@ -35,31 +40,78 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         view.wantsLayer = true
         
         
+        self.avatarImage.layer?.cornerRadius = 20
+        
+        
         // Setup Github loader
         self.loader = GithubLoader()
         
         // Setup settings button
         settingsButton.updateTitle("\u{f013}", fontSize: CGFloat(22.0))
         
+        // Setup refresh button
+        refreshButton.updateTitle("\u{f021}", fontSize: CGFloat(22.0))
+        
         // Setup GistTableView
         setupGistTableView()
         
         if self.loader.isAuthorized() {
-            loader.requestGists() { gists, error in
-                if let unwrappedgists = gists {
-                    self.gists = unwrappedgists
-                    self.reloadGistTableView()
+            loadGists()
+            
+            loader.requestUserdata() { user, error in
+                if let githubUser = user {
+                    print("Loaded user\(githubUser)")
+                    
+                    self.user = githubUser
+                    self.setLoggedinName(githubUser["name"] as! String)
+                    self.loadAvatarImage(githubUser["avatar_url"] as! String)
                 }
+
             }
         }
     }
     
+    // Open user profile on github when clicking on username
+    @IBAction func usernameClicked(sender: NSButton) {
+        NSWorkspace.sharedWorkspace().openURL(NSURL(string: self.user["html_url"] as! String)!)
+    }
+    
+    
+    func setLoggedinName(name: String) {
+        let buttonFont = NSFont(name: "Lato-Light", size: 13.0)
+        self.username.font = buttonFont
+        self.username?.title = name
+    }
+    
+    
+    func loadGists() {
+        loader.requestGists() { gists, error in
+            if let unwrappedgists = gists {
+                self.gists = unwrappedgists
+                self.reloadGistTableView()
+            }
+        }
+    }
+    
+    func loadAvatarImage(imageURL: String) {
+        let avatarURL = NSURL(string: imageURL)
+        
+        let session = NSURLSession.sharedSession()
+        session.dataTaskWithURL(avatarURL!) { data, response, error in
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                guard let data = data where error == nil else { return }
+                let image = NSImage(data: data)
+                image!.size = NSSize(width: 30, height: 30)
+                self.avatarImage.image = image
+            }
+        }.resume()
+    }
     
     // Setup stuff on table view
     func setupGistTableView() {
         gistTableView.setDataSource(self)
         gistTableView.setDelegate(self)
-        gistTableView.rowHeight = 60.0
+        gistTableView.rowHeight = 50.0
         gistTableView.target = self
         gistTableView.doubleAction = "gistTableViewDoubleClick:"
         
@@ -92,16 +144,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             return nil
         }
         
-        guard let gistId = item["id"] as? String,
+        guard let _ = item["id"] as? String,
             let gistHtmlURL = item["html_url"] as? String,
-            let description = item["description"] as? String
+            let description = item["description"] as? String,
+            let createdAt = item["created_at"] as? String
             else {
                 return nil
             }
         
         if let cell = tableView.makeViewWithIdentifier("mainCell", owner: nil) as? GistTableCell {
             cell.titleLabel.stringValue = description
-            cell.subtitleLabel.stringValue = gistId
+            cell.subtitleLabel.stringValue = createdAt
             cell.setGistUrl(NSURL(string: gistHtmlURL)!)
             
             return cell
@@ -111,10 +164,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     func gistTableViewDoubleClick(sender: AnyObject) {
-        
-        print("did Double click")
-        print("Click row \(gistTableView.clickedRow) clicked column \(gistTableView.clickedColumn)")
-        
+
+        if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
+            
+            let selectedGist = self.gists[gistTableView.clickedRow]
+            
+            gistInfoViewController.loader = self.loader
+            gistInfoViewController.loadedGist = selectedGist as! [String : AnyObject]
+            
+            self.presentViewControllerAsSheet(gistInfoViewController)
+
+        }
     }
     
     
@@ -127,7 +187,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             if let singleServiceViewController = windowController.contentViewController as? SingleServiceViewController {
                 singleServiceViewController.loader = loader
                 
-                windowController.showWindow(sender)
+                self.presentViewControllerAsSheet(singleServiceViewController)
+                
+//                windowController.showWindow(sender)
+
                 openController = windowController
                 return
             }
@@ -140,9 +203,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     @IBAction func authButtonClicked(sender: NSButton) {
         try! openViewControllerWithLoader(self.loader, sender: sender)
-        
-        print("Clicked: \(sender)")
     }
 
+    @IBAction func refreshGists(sender: FontAwesomeButton) {
+        loadGists()
+    }
 }
 
