@@ -56,6 +56,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         setupGistTableView()
         
         if self.loader.isAuthorized() {
+            refreshButton.hidden = false
+            
             loadGists()
             
             loader.requestUserdata() { user, error in
@@ -68,8 +70,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
                 }
 
             }
+        } else {
+            refreshButton.hidden = true
         }
     }
+    
+    override func viewDidAppear() {
+        if !self.loader.isAuthorized() {
+            try! openViewControllerWithLoader(self.loader, sender: nil)
+        }
+    }
+    
     
     // Open user profile on github when clicking on username
     @IBAction func usernameClicked(sender: NSButton) {
@@ -147,7 +158,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         guard let _ = item["id"] as? String,
             let gistHtmlURL = item["html_url"] as? String,
             let description = item["description"] as? String,
-            let createdAt = item["created_at"] as? String
+            let createdAt = item["created_at"] as? String,
+            let publicGist = item["public"] as? Bool
             else {
                 return nil
             }
@@ -156,6 +168,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             cell.titleLabel.stringValue = description
             cell.subtitleLabel.stringValue = createdAt
             cell.setGistUrl(NSURL(string: gistHtmlURL)!)
+            
+            if publicGist {
+                cell.privateIcon.stringValue = "\u{f023}"
+            }
             
             return cell
         }

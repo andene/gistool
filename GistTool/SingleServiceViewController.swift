@@ -16,6 +16,44 @@ class SingleServiceViewController: NSViewController {
 
     @IBOutlet weak var authButton: NSButton!
     @IBOutlet weak var label: NSTextField!
+    @IBOutlet weak var signInLabel: NSTextField!
+    @IBOutlet weak var closeButton: FontAwesomeButton!
+    
+    @IBOutlet weak var image: NSImageView!
+    
+    override func viewDidLoad() {
+        self.view.wantsLayer = true
+        
+        signInLabel.useLatoWithSize(CGFloat(13.0))
+        closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
+        
+        let userDefault = NSUserDefaults.standardUserDefaults()
+        if let firstTime = userDefault.boolForKey("firstTimeRunning") as? Bool{
+            
+        }
+        
+    }
+    
+    override func viewDidAppear() {
+
+        let image = NSImage(named: "GitHub_Logo")
+        image!.size = NSSize(width: 260, height: 100)
+        self.image?.image = image
+
+        
+        if loader.isAuthorized() {
+            signInLabel.stringValue = "Signed in using"
+            authButton?.title = "Sign out"
+        }
+    }
+    
+    override func viewWillAppear() {
+        view.layer?.backgroundColor = NSColor.whiteColor().CGColor
+    }
+    @IBAction func closeWindow(sender: NSButton) {
+        dismissController(sender)
+        
+    }
     
     /** Forwards to `displayError(NSError)`. */
     func showError(error: ErrorType) {
@@ -42,21 +80,25 @@ class SingleServiceViewController: NSViewController {
     
     @IBAction func forgetTokens(sender: NSButton) {
         loader.oauth2.forgetTokens()
-        print("Forget existing tokens")
     }
     
     
     @IBAction func beginAuth(sender: NSButton) {
-        print("Begin auth process")
-        
-        authButton?.title = "Authorizing..."
-        authButton?.enabled = false
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleRedirect:", name: OAuth2AppDidReceiveCallbackNotification, object: nil)
-        
-        loader.authorize(view.window) { didFail, error in
-            self.didAuthorize(didFail, error: error)
+
+        if loader.isAuthorized() {
+            forgetTokens(sender)
+        } else {
+            authButton?.title = "Authorizing..."
+            authButton?.enabled = false
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleRedirect:", name: OAuth2AppDidReceiveCallbackNotification, object: nil)
+            
+            loader.authorize(view.window) { didFail, error in
+                self.didAuthorize(didFail, error: error)
+            }
         }
+        
+        
     }
     
     func didAuthorize(didFail: Bool, error: ErrorType?) {
@@ -69,7 +111,7 @@ class SingleServiceViewController: NSViewController {
         } else {
             self.authorizeComplete()
         }
-        authButton?.title = "Authorize"
+        authButton?.title = "Sign in"
         authButton?.enabled = true
         
     }

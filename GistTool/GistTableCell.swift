@@ -14,6 +14,7 @@ class GistTableCell: NSTableCellView {
     @IBOutlet var titleLabel: NSTextField!
     @IBOutlet var subtitleLabel: NSTextField!
     @IBOutlet var linkButton: FontAwesomeButton!
+    @IBOutlet var privateIcon: NSTextField!
     
     var gistURL: NSURL?
     
@@ -35,11 +36,18 @@ class GistTableCell: NSTableCellView {
         let titleFont = NSFont(name: "Lato-Bold", size: 13.0)
         titleLabel.textColor = titleColor
         titleLabel.font = titleFont
+        titleLabel.sizeToFit()
         
         let subtitleColor = NSColor(calibratedRed: CGFloat(125.0/255), green: CGFloat(125.0/255), blue: CGFloat(125.0/255), alpha: 1)
         let subtitleFont = NSFont(name: "Lato-Light", size: 11.0)
         subtitleLabel.textColor = subtitleColor
         subtitleLabel.font = subtitleFont
+        
+        
+        let iconColor = NSColor(calibratedRed: CGFloat(200.0/255), green: CGFloat(200.0/255), blue: CGFloat(200.0/255), alpha: 1)
+        let iconFont = NSFont(name: "FontAwesome", size: 13.0)
+        privateIcon.textColor = iconColor
+        privateIcon.font = iconFont
         
     }
 }
