@@ -12,9 +12,10 @@ import Quartz
 class GistInfoViewController: NSViewController {
     
     @IBOutlet weak var closeButton: FontAwesomeButton!
+    @IBOutlet weak var descriptionLabel: NSTextField!
     
     var loader: GithubLoader!
-    var loadedGist: [String: AnyObject]!
+    var loadedGist: Gist!
     
     override func viewDidLoad() {
         
@@ -23,15 +24,20 @@ class GistInfoViewController: NSViewController {
         
         closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
         
+        
         if let gist = self.loadedGist {
             print("\(gist)")
+            
+            descriptionLabel.useLatoWithSize(14.0, bold: true)
+            descriptionLabel.textColor = ViewController.getLightTextColor()
+            descriptionLabel.stringValue = gist.description
         }
         
     }
     
     
     override func viewWillAppear() {
-        view.layer?.backgroundColor = NSColor.whiteColor().CGColor
+        view.layer?.backgroundColor = ViewController.getBackgroundColor().CGColor
     }
     
     @IBAction func closeModal(sender: NSButton) {

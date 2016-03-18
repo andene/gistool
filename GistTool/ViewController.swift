@@ -28,13 +28,34 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     @IBOutlet weak var username: NSButton!
     
     var loader: GithubLoader!
-    var gists: [NSDictionary]!
+    var gists: [Gist]!
     var user: NSDictionary!
+    var darkThemeEnabled:Bool!
+    
+    static func getBackgroundColor() -> NSColor {
+        return NSColor(calibratedRed: CGFloat(20.0/255), green: CGFloat(21.0/255), blue: CGFloat(20.0/255), alpha: 1.0)
+    }
+    
+    static func getLighBackgroundColor() -> NSColor {
+        return NSColor(calibratedRed: CGFloat(40.0/255), green: CGFloat(40.0/255), blue: CGFloat(40.0/255), alpha: 1.0)
+    }
+    static func getLightTextColor() -> NSColor {
+        return NSColor(calibratedRed: CGFloat(240.0/255), green: CGFloat(240.0/255), blue: CGFloat(240.0/255), alpha: 1)
+    }
+    static func getMediumTextColor() -> NSColor {
+        return NSColor(calibratedRed: CGFloat(150.0/255), green: CGFloat(150.0/255), blue: CGFloat(150.0/255), alpha: 1)
+    }
+    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        let userDefault = NSUserDefaults.standardUserDefaults()
+        if let useDarkTheme = userDefault.boolForKey("darkTheme") as? Bool{
+            darkThemeEnabled = useDarkTheme
+        }
         
         // Layer
         view.wantsLayer = true
@@ -56,24 +77,33 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         setupGistTableView()
         
         if self.loader.isAuthorized() {
-            refreshButton.hidden = false
-            
-            loadGists()
-            
-            loader.requestUserdata() { user, error in
-                if let githubUser = user {
-                    print("Loaded user\(githubUser)")
-                    
-                    self.user = githubUser
-                    self.setLoggedinName(githubUser["name"] as! String)
-                    self.loadAvatarImage(githubUser["avatar_url"] as! String)
-                }
-
-            }
+            isSignedIn()
+        
         } else {
             refreshButton.hidden = true
         }
     }
+    
+    func isSignedIn() {
+        
+        refreshButton.hidden = false
+        
+        loadGists()
+        
+        loader.requestUserdata() { user, error in
+            if let githubUser = user {
+                
+                self.user = githubUser
+                self.setLoggedinName(githubUser["name"] as! String)
+                self.loadAvatarImage(githubUser["avatar_url"] as! String)
+            }
+        }
+    }
+    
+    func isSignedOut() {
+        
+    }
+    
     
     override func viewDidAppear() {
         if !self.loader.isAuthorized() {
@@ -90,8 +120,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func setLoggedinName(name: String) {
         let buttonFont = NSFont(name: "Lato-Light", size: 13.0)
-        self.username.font = buttonFont
-        self.username?.title = name
+        
+        
+        let pstyle = NSMutableParagraphStyle()
+        
+        let attributedTitle = NSAttributedString(string: name, attributes: [
+            NSForegroundColorAttributeName : ViewController.getLightTextColor(),
+            NSParagraphStyleAttributeName : pstyle,
+            NSFontAttributeName: buttonFont!
+            
+            ])
+        
+        username.attributedTitle = attributedTitle
     }
     
     
@@ -122,14 +162,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     func setupGistTableView() {
         gistTableView.setDataSource(self)
         gistTableView.setDelegate(self)
-        gistTableView.rowHeight = 50.0
+        gistTableView.rowHeight = 65.0
         gistTableView.target = self
         gistTableView.doubleAction = "gistTableViewDoubleClick:"
+        gistTableView.backgroundColor = ViewController.getBackgroundColor()
         
     }
 
     override func viewWillAppear() {
-        view.layer?.backgroundColor = NSColor.whiteColor().CGColor
+        let backgroundColor = ViewController.getBackgroundColor()
+        view.layer?.backgroundColor = backgroundColor.CGColor
     }
     
     
@@ -151,25 +193,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
     
-        guard let item = self.gists?[row] else {
+        guard let gist = self.gists?[row] else {
             return nil
         }
         
-        guard let _ = item["id"] as? String,
-            let gistHtmlURL = item["html_url"] as? String,
-            let description = item["description"] as? String,
-            let createdAt = item["created_at"] as? String,
-            let publicGist = item["public"] as? Bool
-            else {
-                return nil
-            }
-        
         if let cell = tableView.makeViewWithIdentifier("mainCell", owner: nil) as? GistTableCell {
-            cell.titleLabel.stringValue = description
-            cell.subtitleLabel.stringValue = createdAt
-            cell.setGistUrl(NSURL(string: gistHtmlURL)!)
+            cell.titleLabel.stringValue = gist.firstFilename //description
+            cell.subtitleLabel.stringValue = gist.createdAt
+            cell.setGistUrl(NSURL(string: gist.htmlUrl)!)
+            cell.descriptionLabel.stringValue = gist.description
             
-            if publicGist {
+            if (gist.isPublic) {
                 cell.privateIcon.stringValue = "\u{f023}"
             }
             
@@ -183,10 +217,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
             
-            let selectedGist = self.gists[gistTableView.clickedRow]
+            let selectedGist = self.gists[gistTableView.clickedRow] as Gist!
             
             gistInfoViewController.loader = self.loader
-            gistInfoViewController.loadedGist = selectedGist as! [String : AnyObject]
+            gistInfoViewController.loadedGist = selectedGist
             
             self.presentViewControllerAsSheet(gistInfoViewController)
 
@@ -195,19 +229,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     
     
-    var openController: NSWindowController?
-    
     // Open the Github Loader in new Window
     func openViewControllerWithLoader(loader: GithubLoader, sender: NSButton?) throws {
         if let windowController = storyboard?.instantiateControllerWithIdentifier("SingleService") as? NSWindowController {
             if let singleServiceViewController = windowController.contentViewController as? SingleServiceViewController {
+
                 singleServiceViewController.loader = loader
                 
-                self.presentViewControllerAsSheet(singleServiceViewController)
-                
-//                windowController.showWindow(sender)
+                view.window?.beginSheet(singleServiceViewController.view.window!, completionHandler: { responseCode in
+                    if responseCode == NSModalResponseOK {
+                        self.isSignedIn()
+                    }
 
-                openController = windowController
+                })
                 return
             }
             throw ServiceError.IncorrectViewControllerClass

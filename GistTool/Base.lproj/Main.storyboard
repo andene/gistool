@@ -650,7 +650,7 @@
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
             <objects>
-                <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="MainWindowController" id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="GistTool - For GitHub" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -686,7 +686,7 @@
         <!--Single Service View Controller-->
         <scene sceneID="sw5-d2-GX6">
             <objects>
-                <viewController id="W5A-lS-WFc" customClass="SingleServiceViewController" customModule="GistTool" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleServiceViewController" id="W5A-lS-WFc" customClass="SingleServiceViewController" customModule="GistTool" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="wLV-Ym-yv9">
                         <rect key="frame" x="0.0" y="0.0" width="400" height="262"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -764,13 +764,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="62" horizontalPageScroll="10" verticalLineScroll="62" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="msn-bN-iTn">
+                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="72" horizontalPageScroll="10" verticalLineScroll="72" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="msn-bN-iTn">
                                 <rect key="frame" x="15" y="78" width="450" height="177"/>
-                                <clipView key="contentView" drawsBackground="NO" id="A68-Yw-vtj">
+                                <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="A68-Yw-vtj">
                                     <rect key="frame" x="0.0" y="0.0" width="450" height="177"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView identifier="gistTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="60" rowSizeStyle="automatic" viewBased="YES" id="9UZ-g9-pfR">
+                                        <tableView identifier="gistTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="70" rowSizeStyle="automatic" viewBased="YES" id="9UZ-g9-pfR">
                                             <rect key="frame" x="0.0" y="0.0" width="450" height="177"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -791,11 +791,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="mainCell" id="JFM-zW-B0O" customClass="GistTableCell" customModule="GistTool" customModuleProvider="target">
-                                                            <rect key="frame" x="1" y="1" width="447" height="60"/>
+                                                            <rect key="frame" x="1" y="1" width="447" height="70"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField identifier="titleLabel" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kUP-4w-NSu">
-                                                                    <rect key="frame" x="3" y="37" width="100" height="20"/>
+                                                                    <rect key="frame" x="3" y="47" width="100" height="20"/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="titleLabel" usesSingleLineMode="YES" id="pRp-CR-cfO">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -803,7 +803,7 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NFq-6z-jus" userLabel="linkButton" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
-                                                                    <rect key="frame" x="417" y="30" width="26" height="32"/>
+                                                                    <rect key="frame" x="417" y="40" width="26" height="32"/>
                                                                     <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="SHY-oL-VZs">
                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                         <font key="font" metaFont="system"/>
@@ -813,7 +813,7 @@
                                                                     </connections>
                                                                 </button>
                                                                 <textField identifier="subtitleLabel" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vQJ-yX-qRR" userLabel="subtitleLabel">
-                                                                    <rect key="frame" x="3" y="15" width="445" height="20"/>
+                                                                    <rect key="frame" x="3" y="25" width="445" height="20"/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="subtitleLabel" id="CDs-BE-kEc">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -821,8 +821,16 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Iu-e7-WsW">
-                                                                    <rect key="frame" x="374" y="40" width="37" height="17"/>
+                                                                    <rect key="frame" x="374" y="50" width="37" height="17"/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="Azz-1l-SCW">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BIb-WI-fyH" userLabel="DescriptionLabel">
+                                                                    <rect key="frame" x="3" y="10" width="442" height="22"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="description" id="w95-M7-h4m">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -832,12 +840,13 @@
                                                             <constraints>
                                                                 <constraint firstItem="8Iu-e7-WsW" firstAttribute="leading" secondItem="kUP-4w-NSu" secondAttribute="trailing" constant="10" id="HpW-6K-i99"/>
                                                                 <constraint firstItem="kUP-4w-NSu" firstAttribute="top" secondItem="JFM-zW-B0O" secondAttribute="top" constant="5" id="KbA-pN-H1s"/>
-                                                                <constraint firstAttribute="trailing" secondItem="NFq-6z-jus" secondAttribute="trailing" constant="10" id="Ovj-l8-wIg"/>
+                                                                <constraint firstAttribute="trailing" secondItem="NFq-6z-jus" secondAttribute="trailing" id="Ovj-l8-wIg"/>
                                                                 <constraint firstItem="8Iu-e7-WsW" firstAttribute="top" secondItem="JFM-zW-B0O" secondAttribute="top" constant="5" id="T8Z-U0-9Qo"/>
-                                                                <constraint firstItem="NFq-6z-jus" firstAttribute="top" secondItem="JFM-zW-B0O" secondAttribute="top" constant="5" id="kyF-Ze-80v"/>
+                                                                <constraint firstItem="NFq-6z-jus" firstAttribute="top" secondItem="JFM-zW-B0O" secondAttribute="top" id="kyF-Ze-80v"/>
                                                                 <constraint firstItem="kUP-4w-NSu" firstAttribute="leading" secondItem="JFM-zW-B0O" secondAttribute="leading" constant="5" id="rIj-85-JBL"/>
                                                             </constraints>
                                                             <connections>
+                                                                <outlet property="descriptionLabel" destination="BIb-WI-fyH" id="Xk4-rU-nAP"/>
                                                                 <outlet property="linkButton" destination="NFq-6z-jus" id="Ik4-LX-J5A"/>
                                                                 <outlet property="privateIcon" destination="8Iu-e7-WsW" id="Rw7-se-Zr2"/>
                                                                 <outlet property="subtitleLabel" destination="vQJ-yX-qRR" id="TrG-Sf-a3C"/>
@@ -950,14 +959,26 @@
                                     <action selector="closeModal:" target="ded-rZ-dft" id="TSo-J4-N3D"/>
                                 </connections>
                             </button>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UC4-XC-2qn">
+                                <rect key="frame" x="18" y="232" width="414" height="48"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Multiline Label" id="WGC-os-IgR">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="UC4-XC-2qn" firstAttribute="top" secondItem="SgM-rV-6rm" secondAttribute="top" constant="15" id="26N-hw-WG2"/>
                             <constraint firstAttribute="bottom" secondItem="jfT-d0-8LE" secondAttribute="bottom" constant="20" id="8qd-57-Pdb"/>
+                            <constraint firstItem="UC4-XC-2qn" firstAttribute="leading" secondItem="SgM-rV-6rm" secondAttribute="leading" constant="15" id="Pcv-NX-FuX"/>
+                            <constraint firstAttribute="trailing" secondItem="UC4-XC-2qn" secondAttribute="trailing" constant="15" id="SUQ-oj-dFJ"/>
                             <constraint firstAttribute="trailing" secondItem="jfT-d0-8LE" secondAttribute="trailing" constant="20" id="bmd-Vw-ohH"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="closeButton" destination="jfT-d0-8LE" id="6vV-Uo-kzV"/>
+                        <outlet property="descriptionLabel" destination="UC4-XC-2qn" id="vZU-ho-5YY"/>
                     </connections>
                 </viewController>
                 <customObject id="HgC-EE-osr" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

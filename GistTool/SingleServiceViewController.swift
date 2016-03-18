@@ -24,7 +24,7 @@ class SingleServiceViewController: NSViewController {
     override func viewDidLoad() {
         self.view.wantsLayer = true
         
-        signInLabel.useLatoWithSize(CGFloat(13.0))
+        signInLabel.useLatoWithSize(CGFloat(13.0),  bold: false)
         closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
         
         let userDefault = NSUserDefaults.standardUserDefaults()
@@ -50,9 +50,12 @@ class SingleServiceViewController: NSViewController {
     override func viewWillAppear() {
         view.layer?.backgroundColor = NSColor.whiteColor().CGColor
     }
+    
+    
+    // Close window with button
     @IBAction func closeWindow(sender: NSButton) {
-        dismissController(sender)
-        
+        view.window!.sheetParent?.endSheet(self.view.window!, returnCode: NSModalResponseCancel)
+        view.window?.close()
     }
     
     /** Forwards to `displayError(NSError)`. */
@@ -127,6 +130,10 @@ class SingleServiceViewController: NSViewController {
     }
     
     func authorizeComplete() {
+        
+        view.window!.sheetParent?.endSheet(self.view.window!, returnCode: NSModalResponseOK)
+        view.window?.close()
+        
         loader.requestUserdata() { dict, error in
             
             print("\(dict)")

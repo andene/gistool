@@ -12,6 +12,14 @@
       </ContextState>
       <ContextState
          contextName = "ViewController.tableView(NSTableView, viewForTableColumn : NSTableColumn?, row : Int) -&gt; NSView?:ViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "files.allValues">
+            </PersistentString>
+            <PersistentString
+               value = "fileName as? String">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>

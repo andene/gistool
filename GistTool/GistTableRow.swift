@@ -9,7 +9,8 @@
 import Cocoa
 
 class GistTableRow: NSTableRowView {
-    
+
+
     override func drawRect(dirtyRect: NSRect) {
         super.drawRect(dirtyRect)
         
@@ -17,7 +18,7 @@ class GistTableRow: NSTableRowView {
         
         if selected {
             
-            NSColor(calibratedRed: CGFloat(240.0/255), green: CGFloat(240.0/255), blue: CGFloat(240.0/255), alpha: 1).setFill()
+            ViewController.getLighBackgroundColor().setFill()
             NSRectFill(dirtyRect)
         }
     }

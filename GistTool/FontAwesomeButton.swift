@@ -17,14 +17,13 @@ class FontAwesomeButton: NSButton {
     
     func updateTitle(title: String, fontSize: CGFloat) {
        
-        let fontColor = NSColor(calibratedRed: CGFloat(30.0/255), green: CGFloat(30.0/255), blue: CGFloat(30.0/255), alpha: 1)
         let titleFont = NSFont(name: "FontAwesome", size: fontSize)
         
         
         let pstyle = NSMutableParagraphStyle()
         
         let attributedTitle = NSAttributedString(string: title, attributes: [
-            NSForegroundColorAttributeName : fontColor,
+            NSForegroundColorAttributeName : ViewController.getMediumTextColor(),
             NSParagraphStyleAttributeName : pstyle,
             NSFontAttributeName: titleFont!
             

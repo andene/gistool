@@ -28,7 +28,7 @@ class GithubLoader {
         "verbose": true
     ])
     
-    func request(path: String, callback: ((dict: [NSDictionary]?, error: ErrorType?) -> Void)) {
+    func request(path: String, callback: ((gists: [Gist]?, error: ErrorType?) -> Void)) {
         
         let url = baseURL.URLByAppendingPathComponent(path)
         let request = oauth2.request(forURL: url)
@@ -41,27 +41,53 @@ class GithubLoader {
         
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
-        
-            //let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)!
-            
-            //print("Resoponse \(response)")
-            //print("Data \(strData)")
-            
             if nil != error {
                 dispatch_async(dispatch_get_main_queue()) {
-                    callback(dict: nil, error: error)
+                    callback(gists: nil, error: error)
                 }
             } else {
                 do {
-                    let dict = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [NSDictionary]
+                    let jsonGists = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [NSDictionary]
                     dispatch_async(dispatch_get_main_queue()) {
-                        callback(dict: dict, error: nil)
+                        
+                        var gists = [Gist]()
+                        for gist in jsonGists! {
+                            
+                            guard let id = gist["id"] as? String,
+                                let htmlURL = gist["html_url"] as? String,
+                                let description = gist["description"] as? String,
+                                let createdAt = gist["created_at"] as? String,
+                                let updatedAt = gist["updated_at"] as? String,
+                                let isPublic = gist["public"] as? Bool,
+                                let files = gist["files"] as? NSDictionary,
+                                
+                                let firstFile = files.allValues.first as? NSDictionary,
+                                let fileName = firstFile.objectForKey("filename") as? String
+                                else {
+                                    callback(gists: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
+                                    break
+                            }
+                            
+                            let newGist = Gist(id: id,
+                                description: description,
+                                htmlUrl: htmlURL,
+                                createdAt: createdAt,
+                                updatedAt: updatedAt,
+                                isPublic: isPublic,
+                                files: files as! [String : AnyObject],
+                                firstFilename: fileName)
+
+                            
+                            gists.append(newGist)
+                        }
+                        
+                        callback(gists: gists, error: nil)
                     }
                 }
                 catch let error {
                     print("Error \(error)")
                     dispatch_async(dispatch_get_main_queue()) {
-                        callback(dict: nil, error: error)
+                        callback(gists: nil, error: error)
                     }
                 }
             }
@@ -108,7 +134,7 @@ class GithubLoader {
         requestSingle("user", callback: callback)
     }
     
-    func requestGists(callback: ((dict: [NSDictionary]?, error: ErrorType?) -> Void )) {
+    func requestGists(callback: ((gists: [Gist]?, error: ErrorType?) -> Void )) {
         request("gists", callback: callback)
     }
     

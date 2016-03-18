@@ -15,6 +15,7 @@ class GistTableCell: NSTableCellView {
     @IBOutlet var subtitleLabel: NSTextField!
     @IBOutlet var linkButton: FontAwesomeButton!
     @IBOutlet var privateIcon: NSTextField!
+    @IBOutlet var descriptionLabel: NSTextField!
     
     var gistURL: NSURL?
     
@@ -32,21 +33,23 @@ class GistTableCell: NSTableCellView {
     
     override func drawRect(dirtyRect: NSRect) {
     
-        let titleColor = NSColor(calibratedRed: CGFloat(30.0/255), green: CGFloat(30.0/255), blue: CGFloat(30.0/255), alpha: 1)
-        let titleFont = NSFont(name: "Lato-Bold", size: 13.0)
-        titleLabel.textColor = titleColor
+        let titleFont = NSFont(name: "Lato-Bold", size: 14.0)
+        titleLabel.textColor = ViewController.getLightTextColor()
         titleLabel.font = titleFont
         titleLabel.sizeToFit()
         
-        let subtitleColor = NSColor(calibratedRed: CGFloat(125.0/255), green: CGFloat(125.0/255), blue: CGFloat(125.0/255), alpha: 1)
-        let subtitleFont = NSFont(name: "Lato-Light", size: 11.0)
-        subtitleLabel.textColor = subtitleColor
+        let subtitleFont = NSFont(name: "Lato-Light", size: 10.0)
+        subtitleLabel.textColor = ViewController.getMediumTextColor()
         subtitleLabel.font = subtitleFont
         
         
-        let iconColor = NSColor(calibratedRed: CGFloat(200.0/255), green: CGFloat(200.0/255), blue: CGFloat(200.0/255), alpha: 1)
+        let descriptionFont = NSFont(name: "Lato-Light", size: 13.0)
+        descriptionLabel.textColor = ViewController.getLightTextColor()
+        descriptionLabel.font = descriptionFont
+        
+        
         let iconFont = NSFont(name: "FontAwesome", size: 13.0)
-        privateIcon.textColor = iconColor
+        privateIcon.textColor = ViewController.getMediumTextColor()
         privateIcon.font = iconFont
         
     }

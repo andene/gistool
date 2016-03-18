@@ -22,6 +22,7 @@
 		E181595D1C98873E003368A2 /* GistInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E181595C1C98873E003368A2 /* GistInfoViewController.swift */; };
 		E181595F1C99EB45003368A2 /* GitHub_Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E181595E1C99EB45003368A2 /* GitHub_Logo.png */; };
 		E18159611C99EC26003368A2 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18159601C99EC26003368A2 /* TextFieldExtension.swift */; };
+		E18159641C9BE8A1003368A2 /* Gist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18159631C9BE8A1003368A2 /* Gist.swift */; };
 		E1B643CF1C8F602A0060FE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643CE1C8F602A0060FE69 /* AppDelegate.swift */; };
 		E1B643D11C8F602A0060FE69 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643D01C8F602A0060FE69 /* ViewController.swift */; };
 		E1B643D31C8F602A0060FE69 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1B643D21C8F602A0060FE69 /* Assets.xcassets */; };
@@ -66,6 +67,7 @@
 		E181595C1C98873E003368A2 /* GistInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GistInfoViewController.swift; sourceTree = "<group>"; };
 		E181595E1C99EB45003368A2 /* GitHub_Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GitHub_Logo.png; sourceTree = "<group>"; };
 		E18159601C99EC26003368A2 /* TextFieldExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
+		E18159631C9BE8A1003368A2 /* Gist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gist.swift; sourceTree = "<group>"; };
 		E1B643CB1C8F602A0060FE69 /* GistTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GistTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1B643CE1C8F602A0060FE69 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1B643D01C8F602A0060FE69 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -154,6 +156,14 @@
 			name = GistInfo;
 			sourceTree = "<group>";
 		};
+		E18159621C9BE736003368A2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E18159631C9BE8A1003368A2 /* Gist.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		E1B643C21C8F602A0060FE69 = {
 			isa = PBXGroup;
 			children = (
@@ -179,6 +189,7 @@
 		E1B643CD1C8F602A0060FE69 /* GistTool */ = {
 			isa = PBXGroup;
 			children = (
+				E18159621C9BE736003368A2 /* Model */,
 				E181595B1C988729003368A2 /* GistInfo */,
 				E18159541C961D2C003368A2 /* resources */,
 				E18159451C95A4EF003368A2 /* gistList */,
@@ -407,6 +418,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E18159641C9BE8A1003368A2 /* Gist.swift in Sources */,
 				E18159611C99EC26003368A2 /* TextFieldExtension.swift in Sources */,
 				E181595A1C974E4A003368A2 /* FontAwesomeButton.swift in Sources */,
 				E181595D1C98873E003368A2 /* GistInfoViewController.swift in Sources */,
