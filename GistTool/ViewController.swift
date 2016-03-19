@@ -26,6 +26,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     @IBOutlet weak var gistTableView: NSTableView!
     @IBOutlet weak var avatarImage: NSImageView!
     @IBOutlet weak var username: NSButton!
+    @IBOutlet weak var hLine: NSBox!
     
     var loader: GithubLoader!
     var gists: [Gist]!
@@ -75,6 +76,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
         // Setup GistTableView
         setupGistTableView()
+       
+        //hLine.boxType = NSBoxType.Custom
+        //hLine.borderType = NSBorderType.LineBorder
+        //hLine.borderColor = NSColor(calibratedRed: CGFloat(240/255), green: CGFloat(240/255), blue: CGFloat(240/255), alpha: 1)
         
         if self.loader.isAuthorized() {
             isSignedIn()
@@ -120,8 +125,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func setLoggedinName(name: String) {
         let buttonFont = NSFont(name: "Lato-Light", size: 13.0)
-        
-        
         let pstyle = NSMutableParagraphStyle()
         
         let attributedTitle = NSAttributedString(string: name, attributes: [
@@ -129,7 +132,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             NSParagraphStyleAttributeName : pstyle,
             NSFontAttributeName: buttonFont!
             
-            ])
+        ])
         
         username.attributedTitle = attributedTitle
     }
@@ -138,6 +141,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     func loadGists() {
         loader.requestGists() { gists, error in
             if let unwrappedgists = gists {
+                
+                let search = NSPredicate(format: "SELF.gistDescription LIKE %@", "Javascript")
+                let s = unwrappedgists.filter() { search.evaluateWithObject($0) }
+                
+                
                 self.gists = unwrappedgists
                 self.reloadGistTableView()
             }
@@ -201,7 +209,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             cell.titleLabel.stringValue = gist.firstFilename //description
             cell.subtitleLabel.stringValue = gist.createdAt
             cell.setGistUrl(NSURL(string: gist.htmlUrl)!)
-            cell.descriptionLabel.stringValue = gist.description
+            cell.descriptionLabel.stringValue = gist.gistDescription
             
             if (gist.isPublic) {
                 cell.privateIcon.stringValue = "\u{f023}"
@@ -212,7 +220,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         return nil
         
     }
-    
+
     func gistTableViewDoubleClick(sender: AnyObject) {
 
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {

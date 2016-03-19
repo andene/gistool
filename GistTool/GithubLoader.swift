@@ -68,13 +68,16 @@ class GithubLoader {
                                     break
                             }
                             
+                            
+                            let gistFiles = self.handleGistFiles(files)
+                            
                             let newGist = Gist(id: id,
                                 description: description,
                                 htmlUrl: htmlURL,
                                 createdAt: createdAt,
                                 updatedAt: updatedAt,
                                 isPublic: isPublic,
-                                files: files as! [String : AnyObject],
+                                files: gistFiles,
                                 firstFilename: fileName)
 
                             
@@ -97,6 +100,18 @@ class GithubLoader {
         
     }
     
+    func handleGistFiles(files: NSDictionary) -> [[String: AnyObject]] {
+        var gistFiles = [[String: AnyObject]]()
+        
+        for (_, value) in files {
+            let fileData = value as! NSDictionary
+                gistFiles.append(fileData as! [String : AnyObject])
+        }
+        
+        return gistFiles
+
+    }
+
     
     func requestSingle(path: String, callback: ((dict: NSDictionary?, error: ErrorType?) -> Void)) {
         
