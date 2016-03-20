@@ -27,9 +27,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     @IBOutlet weak var avatarImage: NSImageView!
     @IBOutlet weak var username: NSButton!
     @IBOutlet weak var hLine: NSBox!
+    @IBOutlet weak var searchField: NSSearchField!
+    @IBOutlet weak var searchFieldCell: NSSearchFieldCell!
     
     var loader: GithubLoader!
     var gists: [Gist]!
+    var searchResults: [Gist]!
     var user: NSDictionary!
     var darkThemeEnabled:Bool!
     
@@ -64,6 +67,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
         self.avatarImage.layer?.cornerRadius = 20
         
+        // Search field
+        setupSearchField()
+
+
         
         // Setup Github loader
         self.loader = GithubLoader()
@@ -123,6 +130,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     
+    func setupSearchField() {
+        searchField.sendsSearchStringImmediately = true
+        searchField.drawsBackground = true
+        searchField.backgroundColor = ViewController.getLighBackgroundColor()
+        searchField.textColor = ViewController.getMediumTextColor()
+        searchField.font = NSFont(name: "Lato", size: 12.0)
+    }
+    
     func setLoggedinName(name: String) {
         let buttonFont = NSFont(name: "Lato-Light", size: 13.0)
         let pstyle = NSMutableParagraphStyle()
@@ -137,16 +152,28 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         username.attributedTitle = attributedTitle
     }
     
+    func searchInGists(query:String?=nil) {
+        
+        if let searchQuery = query {
+            let searchDescription = NSPredicate(format: "SELF.gistDescription CONTAINS[c] %@", searchQuery)
+            let searchFilename = NSPredicate(format: "SELF.firstFilename CONTAINS[c] %@", searchQuery)
+            
+            let searchCompound = NSCompoundPredicate(type: NSCompoundPredicateType.OrPredicateType, subpredicates: [searchDescription, searchFilename])
+
+            self.searchResults = self.gists.filter() { searchCompound.evaluateWithObject($0) }
+        } else {
+            self.searchResults = self.gists
+        }
+        self.reloadGistTableView()
+
+    }
     
     func loadGists() {
+        
         loader.requestGists() { gists, error in
             if let unwrappedgists = gists {
-                
-                let search = NSPredicate(format: "SELF.gistDescription LIKE %@", "Javascript")
-                let s = unwrappedgists.filter() { search.evaluateWithObject($0) }
-                
-                
                 self.gists = unwrappedgists
+                self.searchResults = unwrappedgists
                 self.reloadGistTableView()
             }
         }
@@ -184,7 +211,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        if let gists = self.gists {
+        if let gists = self.searchResults {
             return gists.count
         }
         return 0
@@ -201,7 +228,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
     
-        guard let gist = self.gists?[row] else {
+        guard let gist = self.searchResults?[row] else {
             return nil
         }
         
@@ -225,7 +252,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
             
-            let selectedGist = self.gists[gistTableView.clickedRow] as Gist!
+            let selectedGist = self.searchResults[gistTableView.clickedRow] as Gist!
             
             gistInfoViewController.loader = self.loader
             gistInfoViewController.loadedGist = selectedGist
@@ -235,6 +262,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
     }
     
+    
+    
+    @IBAction func didSearch(sender: NSSearchField) {
+        let searchQuery = sender.stringValue
+        
+        if searchQuery.characters.count > 0 {
+            searchInGists(sender.stringValue)
+        } else {
+            searchInGists()
+        }
+    }
     
     
     // Open the Github Loader in new Window

@@ -34,7 +34,7 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
             
             descriptionLabel.useLatoWithSize(14.0, bold: true)
             descriptionLabel.textColor = ViewController.getLightTextColor()
-            descriptionLabel.stringValue = gist.description
+            descriptionLabel.stringValue = gist.gistDescription
             
             let dateFormatter = NSDateFormatter()
             //dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"

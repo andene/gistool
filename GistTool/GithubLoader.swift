@@ -120,8 +120,6 @@ class GithubLoader {
         print("Fetching URL \(url)")
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         
-        //print("Request sent \(request)")
-        
         NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
             if nil != error {
                 dispatch_async(dispatch_get_main_queue()) {

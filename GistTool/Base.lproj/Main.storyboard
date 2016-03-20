@@ -771,7 +771,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView identifier="gistTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="70" rowSizeStyle="automatic" viewBased="YES" id="9UZ-g9-pfR">
-                                            <rect key="frame" x="0.0" y="0.0" width="450" height="177"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="450" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -899,8 +899,8 @@
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
-                            <button horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eFG-SQ-v8r">
-                                <rect key="frame" x="30" y="15" width="377" height="32"/>
+                            <button horizontalHuggingPriority="249" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eFG-SQ-v8r">
+                                <rect key="frame" x="30" y="15" width="154" height="32"/>
                                 <buttonCell key="cell" type="bevel" title="Not signed in" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="fGZ-WX-YZn">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" size="13" name="FontAwesome"/>
@@ -909,6 +909,17 @@
                                     <action selector="usernameClicked:" target="XfG-lQ-9wD" id="eDb-S5-o9G"/>
                                 </connections>
                             </button>
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ghb-aa-POP">
+                                <rect key="frame" x="205" y="16" width="168" height="22"/>
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="Drq-2k-prQ">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </searchFieldCell>
+                                <connections>
+                                    <action selector="didSearch:" target="XfG-lQ-9wD" id="1DU-6o-N5e"/>
+                                </connections>
+                            </searchField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="KEq-U7-eLc" firstAttribute="top" secondItem="msn-bN-iTn" secondAttribute="bottom" constant="15" id="1Ur-JM-Zrn"/>
@@ -919,7 +930,6 @@
                             <constraint firstItem="KEq-U7-eLc" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="IQT-Jh-utD"/>
                             <constraint firstItem="pGj-Co-Nb8" firstAttribute="leading" secondItem="ylG-85-dMZ" secondAttribute="trailing" constant="15" id="JTm-M7-RqC"/>
                             <constraint firstItem="P9a-mK-h1W" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="PJ6-DD-0dQ"/>
-                            <constraint firstItem="ylG-85-dMZ" firstAttribute="leading" secondItem="eFG-SQ-v8r" secondAttribute="trailing" constant="15" id="QSL-GQ-YhW"/>
                             <constraint firstAttribute="trailing" secondItem="msn-bN-iTn" secondAttribute="trailing" constant="15" id="SD1-6P-Mcx"/>
                             <constraint firstAttribute="trailing" secondItem="KEq-U7-eLc" secondAttribute="trailing" constant="15" id="U7h-61-31H"/>
                             <constraint firstItem="msn-bN-iTn" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="Wiy-jY-njg"/>
@@ -927,8 +937,11 @@
                             <constraint firstItem="KEq-U7-eLc" firstAttribute="top" secondItem="msn-bN-iTn" secondAttribute="bottom" constant="15" id="ZWk-Ki-BMY"/>
                             <constraint firstAttribute="bottom" secondItem="ylG-85-dMZ" secondAttribute="bottom" constant="15" id="cc0-Kh-IrB"/>
                             <constraint firstItem="msn-bN-iTn" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="15" id="ddM-RB-DFX"/>
+                            <constraint firstItem="ylG-85-dMZ" firstAttribute="leading" secondItem="ghb-aa-POP" secondAttribute="trailing" constant="30" id="e1x-vO-cxg"/>
                             <constraint firstAttribute="bottom" secondItem="eFG-SQ-v8r" secondAttribute="bottom" constant="15" id="hIC-Bw-1tg"/>
                             <constraint firstAttribute="trailing" secondItem="pGj-Co-Nb8" secondAttribute="trailing" constant="15" id="wgf-O7-YaV"/>
+                            <constraint firstAttribute="bottom" secondItem="ghb-aa-POP" secondAttribute="bottom" constant="15" id="xlB-EI-riM"/>
+                            <constraint firstItem="ghb-aa-POP" firstAttribute="leading" secondItem="eFG-SQ-v8r" secondAttribute="trailing" constant="21" id="zDP-GD-mG3"/>
                         </constraints>
                     </view>
                     <connections>
@@ -936,6 +949,8 @@
                         <outlet property="gistTableView" destination="9UZ-g9-pfR" id="sN5-ir-7VP"/>
                         <outlet property="hLine" destination="KEq-U7-eLc" id="uUk-pm-xWM"/>
                         <outlet property="refreshButton" destination="ylG-85-dMZ" id="47D-vZ-5XJ"/>
+                        <outlet property="searchField" destination="ghb-aa-POP" id="uiV-HV-RQL"/>
+                        <outlet property="searchFieldCell" destination="Drq-2k-prQ" id="Eqw-5W-4cm"/>
                         <outlet property="settingsButton" destination="pGj-Co-Nb8" id="cew-ox-29p"/>
                         <outlet property="username" destination="eFG-SQ-v8r" id="Z6B-EG-rj6"/>
                     </connections>
@@ -1034,7 +1049,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Jbh-9l-run">
-                                    <rect key="frame" x="1" y="119" width="223" height="15"/>
+                                    <rect key="frame" x="0.0" y="-16" width="0.0" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="cNv-eF-Z9w">
