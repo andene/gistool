@@ -55,10 +55,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     required init?(coder: NSCoder) {
         
         let config = Realm.Configuration(
-            schemaVersion: 1,
+            schemaVersion: 2,
             
             migrationBlock: { migration, oldSchemaVersion in
-                if (oldSchemaVersion < 1) {
+                if (oldSchemaVersion < 2) {
                 }
         })
         

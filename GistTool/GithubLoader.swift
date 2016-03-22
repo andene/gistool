@@ -29,8 +29,15 @@ class GithubLoader {
         "verbose": true
     ])
     
+    
+    /**
+     *  Request a list of users gists
+     *  @param path The endpoint path in Githubs API
+     *  @param callback A tuple returning gists and error
+     */
+    
     func request(path: String, callback: ((gists: [Gist]?, error: ErrorType?) -> Void)) {
-        
+    
         let url = baseURL.URLByAppendingPathComponent(path)
         let request = oauth2.request(forURL: url)
         request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
@@ -61,35 +68,55 @@ class GithubLoader {
                             // Check if Gist exist in database
                             let realm = try! Realm()
                             
-                            let gistRecords = realm.objects(Gist).filter("gistId == %@", id)
-                            
-                            if gistRecords.count >= 1 {
-                                let gistRecord = gistRecords[0] as Gist!
-                                
-                                let dateFormatter = NSDateFormatter()
-                                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-                                let updatedDate = dateFormatter.dateFromString(updatedAt) as NSDate!
-                                
+                            if let gistRecord = realm.objects(Gist).filter("gistId == %@", id).first {
+
+                                let updatedDate = self.getDateFromString(updatedAt)
                                 
                                 let dateCompare = updatedDate.compare(gistRecord.updatedAt!)
                                 if dateCompare == NSComparisonResult.OrderedDescending {
                                     print("Gist is updated, replace: \(gistRecord.gistDescription)")
                                     
-                                    // Delete the old gist
-                                    try! realm.write {
-                                        realm.delete(gistRecord)
-                                    }
-                                    
                                     // Add the gist again
                                     if let newGist = self.createGistFromJSON(gist, callback: callback) {
+                                        
+                                        // If we could update the gist, delete all files before adding them
+                                        self.deleteGistFiles(gistRecord)
+                                        
+                                        
                                         self.createGistItem(newGist)
+                                        let url = "gists/" + id
+
+                                        self.requestGistFiles(url) { gistFiles, error in
+                                            for file in gistFiles! {
+                                                try! realm.write() {
+                                                    gistRecord.files.append(file)
+                                                }
+                                                
+                                            }
+                                        }
                                     }
                                 }
 
                                 
-                            } else if (gistRecords.count == 0) {
+                            } else  {
                                 if let newGist = self.createGistFromJSON(gist, callback: callback) {
                                     self.createGistItem(newGist)
+                                    let url = "gists/" + id
+                                    
+                                    if let gistRecord = realm.objects(Gist).filter("gistId == %@", id).first {
+                                        self.requestGistFiles(url) { gistFiles, error in
+                                            if nil != error {
+                                                print("Error \(error)")
+                                            } else {
+                                                for file in gistFiles! {
+                                                    try! realm.write() {
+                                                        gistRecord.files.append(file)
+                                                    }
+                                                }
+                                            }
+                                            
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -110,6 +137,95 @@ class GithubLoader {
         
     }
     
+    func deleteGistFiles(gist:Gist) {
+        let realm = try! Realm()
+        
+        try! realm.write {
+            for file in gist.files {
+                realm.delete(file)
+            }
+        }
+    }
+    
+    func requestGistFiles(path: String, callback: ((gistFiles: [File]?, error: ErrorType?) -> Void)) {
+        
+        let url = baseURL.URLByAppendingPathComponent(path)
+        let request = oauth2.request(forURL: url)
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
+        print("Request \(url)")
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            if nil != error {
+                dispatch_async(dispatch_get_main_queue()) {
+                    callback(gistFiles: nil, error: error)
+                }
+            } else {
+                do {
+                    let jsonGists = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary
+                    dispatch_async(dispatch_get_main_queue()) {
+                        
+                        var gistFiles = [File]()
+                        if let gist = jsonGists {
+                        
+                            if let gistId = gist["id"] as? String {
+                            
+                                if let files = gist["files"] as? NSDictionary {
+                                    
+                                    let gistFileArray = self.handleGistFiles(files)
+                                
+                                    for file in gistFileArray {
+                                        guard let filename = file["filename"] as? String,
+                                            let size = file["size"] as? Int,
+                                            let rawUrl = file["raw_url"] as? String,
+                                            let language = file["language"] as? String,
+                                            let content = file["content"] as? String,
+                                            let type = file["type"] as? String
+                                            else {
+                                                callback(gistFiles: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
+                                                break
+                                        }
+                                    
+                                        var isTruncated = false
+                                        if let _ = file["truncated"] as? Bool {
+                                            isTruncated = true
+                                        }
+                                    
+                                        let gistFile = File(filename: filename,
+                                            size: size,
+                                            rawUrl: rawUrl,
+                                            type: type,
+                                            language: language,
+                                            isTruncated: isTruncated,
+                                            content: content,
+                                            gistId: gistId)
+                                    
+                                        gistFiles.append(gistFile)
+                                    }
+                            } else {
+                                callback(gistFiles: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
+                            }
+                                
+                            }
+                        }
+                        
+                        callback(gistFiles: gistFiles, error: nil)
+                    }
+                }
+                catch let error {
+                    print("Error \(error)")
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(gistFiles: nil, error: error)
+                    }
+                }
+            }
+            
+        }
+        task.resume()
+        
+    }
+
     
     func createGistFromJSON(gist: NSDictionary, callback: ((gists: [Gist]?, error: ErrorType?) -> Void)) -> Gist? {
         
@@ -128,10 +244,8 @@ class GithubLoader {
                 return nil
         }
         
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        let createdDated = dateFormatter.dateFromString(createdAt)
-        let updatedDate = dateFormatter.dateFromString(updatedAt) as NSDate!
+        let createdDated = self.getDateFromString(createdAt)
+        let updatedDate = self.getDateFromString(updatedAt)
         
         let newGist = Gist(gistId: id,
             description: description,
@@ -146,11 +260,19 @@ class GithubLoader {
     }
     
     
+    func getDateFromString(date: String) -> NSDate {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        let parsedDate = dateFormatter.dateFromString(date) as NSDate!
+        return parsedDate
+    }
+    
+    
     func createGistItem(gist: Gist) {
         
         let realm = try! Realm()
         try! realm.write {
-            realm.add(gist)
+            realm.add(gist, update: true)
         }
 
     }

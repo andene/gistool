@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GistTool/GithubLoader.swift"
-            timestampString = "480364365.923956"
+            timestampString = "480374694.621159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
+            startingLineNumber = "342"
+            endingLineNumber = "342"
             landmarkName = "handleRedirectUrl(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GistTool/SingleServiceViewController.swift"
-            timestampString = "479934915.724139"
+            timestampString = "480373344.81408"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
             landmarkName = "handleRedirect(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GistTool/SingleServiceViewController.swift"
-            timestampString = "479934915.724139"
+            timestampString = "480373344.81408"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
             landmarkName = "didAuthorize(_:error:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -134,15 +134,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GistTool/SingleServiceViewController.swift"
-            timestampString = "480175251.285593"
+            timestampString = "480373291.762051"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -154,13 +154,125 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GistTool/GithubLoader.swift"
-            timestampString = "480364365.923956"
+            timestampString = "480374006.136359"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
             landmarkName = "request(_:callback:)"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GistTool/GithubLoader.swift"
+            timestampString = "480374694.621159"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
+            landmarkName = "requestGistFiles(_:callback:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GistTool/GithubLoader.swift"
+            timestampString = "480374566.681476"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "request(_:callback:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GistTool.GithubLoader.(request (GistTool.GithubLoader) -&gt; (Swift.String, callback : (gists : Swift.Optional&lt;Swift.Array&lt;GistTool.Gist&gt;&gt;, error : Swift.Optional&lt;Swift.ErrorType&gt;) -&gt; ()) -&gt; ()).(closure #1).(closure #2).(closure #2)"
+                  moduleName = "GistTool"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andreas/Documents/Utveckling/OSX/GistTool/GistTool/GithubLoader.swift"
+                  timestampString = "480371261.929329"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "807">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GistTool.GithubLoader.(request (GistTool.GithubLoader) -&gt; (Swift.String, callback : (gists : Swift.Optional&lt;Swift.Array&lt;GistTool.Gist&gt;&gt;, error : Swift.Optional&lt;Swift.ErrorType&gt;) -&gt; ()) -&gt; ()).(closure #1).(closure #2).(closure #2).(closure #1)"
+                  moduleName = "GistTool"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andreas/Documents/Utveckling/OSX/GistTool/GistTool/GithubLoader.swift"
+                  timestampString = "480371261.929496"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "411">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GistTool/GithubLoader.swift"
+            timestampString = "480374566.681476"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "request(_:callback:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GistTool.GithubLoader.(request (GistTool.GithubLoader) -&gt; (Swift.String, callback : (gists : Swift.Optional&lt;Swift.Array&lt;GistTool.Gist&gt;&gt;, error : Swift.Optional&lt;Swift.ErrorType&gt;) -&gt; ()) -&gt; ()).(closure #1).(closure #2).(closure #2)"
+                  moduleName = "GistTool"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andreas/Documents/Utveckling/OSX/GistTool/GistTool/GithubLoader.swift"
+                  timestampString = "480371279.516177"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "94"
+                  endingLineNumber = "94"
+                  offsetFromSymbolStart = "704">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GistTool.GithubLoader.(request (GistTool.GithubLoader) -&gt; (Swift.String, callback : (gists : Swift.Optional&lt;Swift.Array&lt;GistTool.Gist&gt;&gt;, error : Swift.Optional&lt;Swift.ErrorType&gt;) -&gt; ()) -&gt; ()).(closure #1).(closure #2).(closure #2).(closure #1)"
+                  moduleName = "GistTool"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andreas/Documents/Utveckling/OSX/GistTool/GistTool/GithubLoader.swift"
+                  timestampString = "480371279.51641"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "95"
+                  endingLineNumber = "95"
+                  offsetFromSymbolStart = "26">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -19,6 +19,9 @@ class Gist: Object {
     dynamic var firstFilename: String!
     let files = List<File>()
     
+    override static func primaryKey() -> String? {
+        return "gistId"
+    }
     
     convenience init(gistId: String,
         description: String,

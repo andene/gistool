@@ -17,8 +17,10 @@ class File: Object {
     dynamic var language: String = ""
     dynamic var isTruncated: Bool = false
     dynamic var content: String = ""
+    dynamic var gistId: String = ""
     
-    required init(filename: String, size: Int, rawUrl: String, type: String, language: String, isTruncated: Bool, content: String) {
+    convenience init(filename: String, size: Int, rawUrl: String, type: String, language: String, isTruncated: Bool, content: String, gistId: String) {
+        self.init()
         
         self.filename = filename
         self.size = size
@@ -27,12 +29,8 @@ class File: Object {
         self.language = language
         self.isTruncated = isTruncated
         self.content = content
-        
-        super.init()
+        self.gistId = gistId
         
     }
 
-    required init() {
-        super.init()
-    }
 }

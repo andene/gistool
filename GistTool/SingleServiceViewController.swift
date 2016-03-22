@@ -8,6 +8,7 @@
 
 import Cocoa
 import p2_OAuth2
+import RealmSwift
 
 class SingleServiceViewController: NSViewController {
     
@@ -51,6 +52,14 @@ class SingleServiceViewController: NSViewController {
         view.layer?.backgroundColor = NSColor.whiteColor().CGColor
     }
     
+    @IBAction func emptyDatabase(sender: AnyObject) {
+        
+        let realm = try! Realm()
+        try! realm.write() {
+            realm.deleteAll()
+        }
+        
+    }
     
     // Close window with button
     @IBAction func closeWindow(sender: NSButton) {
