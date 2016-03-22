@@ -6,38 +6,40 @@
 //  Copyright © 2016 Oak. All rights reserved.
 //
 
-import Cocoa
+import RealmSwift
 
-class Gist: NSObject {
+class Gist: Object {
 
-    var id: String!
-    var gistDescription:String!
-    var htmlUrl: String!
-    var createdAt: String!
-    var updatedAt: String!
-    var isPublic: Bool
-    var files: [[String: AnyObject]]!
-    var firstFilename: String!
+    dynamic var gistId: String!
+    dynamic var gistDescription:String!
+    dynamic var htmlUrl: String!
+    dynamic var createdAt: NSDate? = nil
+    dynamic var updatedAt: NSDate? = nil
+    dynamic var isGistPublic: Bool = false
+    dynamic var firstFilename: String!
+    let files = List<File>()
     
-    init(id: String,
+    
+    convenience init(gistId: String,
         description: String,
         htmlUrl: String,
-        createdAt: String,
-        updatedAt: String,
-        isPublic: Bool,
-        files: [[String:AnyObject]],
+        createdAt: NSDate?,
+        updatedAt: NSDate?,
+        isGistPublic: Bool,
         firstFilename: String) {
-        
-            self.id = id
+            
+            self.init()
+            self.gistId = gistId
             self.gistDescription = description
             self.htmlUrl = htmlUrl
             self.createdAt = createdAt
             self.updatedAt = updatedAt
-            self.isPublic = isPublic
-            self.files = files
+            self.isGistPublic = isGistPublic
+            //self.files = files
             self.firstFilename = firstFilename
-            
+
             
     }
     
+
 }

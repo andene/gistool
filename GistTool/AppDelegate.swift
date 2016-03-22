@@ -8,20 +8,34 @@
 
 import Cocoa
 import p2_OAuth2
+import RealmSwift
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    
+    func applicationDidBecomeActive(notification: NSNotification) {
+        
+        
+    }
+    
+    
+    
     func applicationDidFinishLaunching(aNotification: NSNotification) {
+        
+        
         NSAppleEventManager.sharedAppleEventManager().setEventHandler(
             self,
             andSelector: "handleURLEvent:withReply",
             forEventClass: AEEventClass(kInternetEventClass),
             andEventID: AEEventID(kAEGetURL))
+        
+        print("Loaded...")
     }
     
-
-    /**
+    
+    
+       /**
      * Handle incoming URL Request and post notification through the notificationCenter
      */
     func handleURLEvent(event: NSAppleEventDescriptor, withReply reply: NSAppleEventDescriptor) {

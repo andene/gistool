@@ -21,5 +21,24 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "SingleServiceViewController.viewDidLoad() -&gt; ():SingleServiceViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "(lldb) po Realm.defaultPath">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GithubLoader.(request(GithubLoader) -&gt; (String, callback : (gists : [Gist]?, error : ErrorType?) -&gt; ()) -&gt; ()).(closure #1).(closure #2):GithubLoader.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "(lldb) po Realm.defaultPath">
+            </PersistentString>
+            <PersistentString
+               value = "gistRecords.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>

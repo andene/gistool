@@ -30,7 +30,12 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         setupTableView()
         
         if let gist = self.loadedGist {
-            print("\(gist)")
+            
+            self.loader.requestSingleGist(gist.gistId) { gists, error in
+                print("Loaded single gist done", gists)
+            }
+            
+            
             
             descriptionLabel.useLatoWithSize(14.0, bold: true)
             descriptionLabel.textColor = ViewController.getLightTextColor()
@@ -42,7 +47,7 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
             //dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
             //dateFormatter.timeStyle = .MediumStyle
             
-            let _ = dateFormatter.dateFromString(gist.createdAt)
+           // let _ = dateFormatter.dateFromString(gist.createdAt)
             
             dateLabel.useLatoWithSize(10.0, bold: false)
             dateLabel.textColor = ViewController.getMediumTextColor()

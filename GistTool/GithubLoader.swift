@@ -8,6 +8,7 @@
 
 import Foundation
 import p2_OAuth2
+import RealmSwift
 
 class GithubLoader {
     
@@ -34,10 +35,7 @@ class GithubLoader {
         let request = oauth2.request(forURL: url)
         request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
         
-        print("Fetching URL \(url)")
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        
-        //print("Request sent \(request)")
         
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
@@ -50,38 +48,50 @@ class GithubLoader {
                     let jsonGists = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [NSDictionary]
                     dispatch_async(dispatch_get_main_queue()) {
                         
-                        var gists = [Gist]()
+                        let gists = [Gist]()
                         for gist in jsonGists! {
                             
                             guard let id = gist["id"] as? String,
-                                let htmlURL = gist["html_url"] as? String,
-                                let description = gist["description"] as? String,
-                                let createdAt = gist["created_at"] as? String,
-                                let updatedAt = gist["updated_at"] as? String,
-                                let isPublic = gist["public"] as? Bool,
-                                let files = gist["files"] as? NSDictionary,
-                                
-                                let firstFile = files.allValues.first as? NSDictionary,
-                                let fileName = firstFile.objectForKey("filename") as? String
+                                  let updatedAt = gist["updated_at"] as? String
                                 else {
                                     callback(gists: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
                                     break
                             }
                             
+                            // Check if Gist exist in database
+                            let realm = try! Realm()
                             
-                            let gistFiles = self.handleGistFiles(files)
+                            let gistRecords = realm.objects(Gist).filter("gistId == %@", id)
                             
-                            let newGist = Gist(id: id,
-                                description: description,
-                                htmlUrl: htmlURL,
-                                createdAt: createdAt,
-                                updatedAt: updatedAt,
-                                isPublic: isPublic,
-                                files: gistFiles,
-                                firstFilename: fileName)
+                            if gistRecords.count >= 1 {
+                                let gistRecord = gistRecords[0] as Gist!
+                                
+                                let dateFormatter = NSDateFormatter()
+                                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                let updatedDate = dateFormatter.dateFromString(updatedAt) as NSDate!
+                                
+                                
+                                let dateCompare = updatedDate.compare(gistRecord.updatedAt!)
+                                if dateCompare == NSComparisonResult.OrderedDescending {
+                                    print("Gist is updated, replace: \(gistRecord.gistDescription)")
+                                    
+                                    // Delete the old gist
+                                    try! realm.write {
+                                        realm.delete(gistRecord)
+                                    }
+                                    
+                                    // Add the gist again
+                                    if let newGist = self.createGistFromJSON(gist, callback: callback) {
+                                        self.createGistItem(newGist)
+                                    }
+                                }
 
-                            
-                            gists.append(newGist)
+                                
+                            } else if (gistRecords.count == 0) {
+                                if let newGist = self.createGistFromJSON(gist, callback: callback) {
+                                    self.createGistItem(newGist)
+                                }
+                            }
                         }
                         
                         callback(gists: gists, error: nil)
@@ -98,6 +108,51 @@ class GithubLoader {
         }
         task.resume()
         
+    }
+    
+    
+    func createGistFromJSON(gist: NSDictionary, callback: ((gists: [Gist]?, error: ErrorType?) -> Void)) -> Gist? {
+        
+        guard let id = gist["id"] as? String,
+            let htmlURL = gist["html_url"] as? String,
+            let description = gist["description"] as? String,
+            let createdAt = gist["created_at"] as? String,
+            let updatedAt = gist["updated_at"] as? String,
+            let isGistPublic = gist["public"] as? Bool,
+            let files = gist["files"] as? NSDictionary,
+            
+            let firstFile = files.allValues.first as? NSDictionary,
+            let fileName = firstFile.objectForKey("filename") as? String
+            else {
+                callback(gists: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
+                return nil
+        }
+        
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        let createdDated = dateFormatter.dateFromString(createdAt)
+        let updatedDate = dateFormatter.dateFromString(updatedAt) as NSDate!
+        
+        let newGist = Gist(gistId: id,
+            description: description,
+            htmlUrl: htmlURL,
+            createdAt: createdDated,
+            updatedAt: updatedDate,
+            isGistPublic: isGistPublic,
+            firstFilename: fileName)
+        
+        return newGist
+
+    }
+    
+    
+    func createGistItem(gist: Gist) {
+        
+        let realm = try! Realm()
+        try! realm.write {
+            realm.add(gist)
+        }
+
     }
     
     func handleGistFiles(files: NSDictionary) -> [[String: AnyObject]] {
@@ -149,6 +204,12 @@ class GithubLoader {
     
     func requestGists(callback: ((gists: [Gist]?, error: ErrorType?) -> Void )) {
         request("gists", callback: callback)
+    }
+    
+    func requestSingleGist(id: String, callback: ((gists: NSDictionary?, error: ErrorType?)-> Void )) {
+        
+        let url = "gists/" + id
+        requestSingle(url, callback: callback)
     }
     
     func isAuthorized() -> Bool {

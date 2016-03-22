@@ -8,6 +8,7 @@
 
 import Cocoa
 import Quartz
+import RealmSwift
 
 let OAuth2AppDidReceiveCallbackNotification = "OAuth2AppDidReceiveCallback"
 
@@ -31,8 +32,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     @IBOutlet weak var searchFieldCell: NSSearchFieldCell!
     
     var loader: GithubLoader!
-    var gists: [Gist]!
-    var searchResults: [Gist]!
+    var gists: Results<Gist>!
+    var realm: Realm
     var user: NSDictionary!
     var darkThemeEnabled:Bool!
     
@@ -50,11 +51,36 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         return NSColor(calibratedRed: CGFloat(150.0/255), green: CGFloat(150.0/255), blue: CGFloat(150.0/255), alpha: 1)
     }
     
+
+    required init?(coder: NSCoder) {
+        
+        let config = Realm.Configuration(
+            schemaVersion: 1,
+            
+            migrationBlock: { migration, oldSchemaVersion in
+                if (oldSchemaVersion < 1) {
+                }
+        })
+        
+        Realm.Configuration.defaultConfiguration = config
+
+        self.realm = try! Realm()
+        
+        super.init(coder: coder)
+    }
+
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        // Setup realm config
+        //setupRealmConfiguration()
+        
+        
+        self.realm = try! Realm()
+        
         
         let userDefault = NSUserDefaults.standardUserDefaults()
         if let useDarkTheme = userDefault.boolForKey("darkTheme") as? Bool{
@@ -129,6 +155,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         NSWorkspace.sharedWorkspace().openURL(NSURL(string: self.user["html_url"] as! String)!)
     }
     
+    func setupRealmConfiguration() {
+        let config = Realm.Configuration(
+            schemaVersion: 1,
+            
+            migrationBlock: { migration, oldSchemaVersion in
+                if (oldSchemaVersion < 1) {
+                }
+        })
+        
+        Realm.Configuration.defaultConfiguration = config
+        
+        
+    }
     
     func setupSearchField() {
         searchField.sendsSearchStringImmediately = true
@@ -154,15 +193,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func searchInGists(query:String?=nil) {
         
+        let realm = try! Realm()
+        
         if let searchQuery = query {
             let searchDescription = NSPredicate(format: "SELF.gistDescription CONTAINS[c] %@", searchQuery)
             let searchFilename = NSPredicate(format: "SELF.firstFilename CONTAINS[c] %@", searchQuery)
             
             let searchCompound = NSCompoundPredicate(type: NSCompoundPredicateType.OrPredicateType, subpredicates: [searchDescription, searchFilename])
 
-            self.searchResults = self.gists.filter() { searchCompound.evaluateWithObject($0) }
+            self.gists = realm.objects(Gist).filter(searchCompound).sorted("updatedAt", ascending: false)
         } else {
-            self.searchResults = self.gists
+            self.gists = realm.objects(Gist).sorted("updatedAt", ascending: false)
         }
         self.reloadGistTableView()
 
@@ -171,11 +212,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     func loadGists() {
         
         loader.requestGists() { gists, error in
-            if let unwrappedgists = gists {
-                self.gists = unwrappedgists
-                self.searchResults = unwrappedgists
-                self.reloadGistTableView()
-            }
+            self.gists = self.realm.objects(Gist).sorted("updatedAt", ascending: false)
+            self.reloadGistTableView()
         }
     }
     
@@ -211,7 +249,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        if let gists = self.searchResults {
+        if let gists = self.gists {
             return gists.count
         }
         return 0
@@ -228,17 +266,32 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
     
-        guard let gist = self.searchResults?[row] else {
+        guard let gist = self.gists?[row] else {
             return nil
         }
         
         if let cell = tableView.makeViewWithIdentifier("mainCell", owner: nil) as? GistTableCell {
-            cell.titleLabel.stringValue = gist.firstFilename //description
-            cell.subtitleLabel.stringValue = gist.createdAt
+            
+            var title:String
+            
+            if gist.files.count > 1 {
+                title = "\(gist.firstFilename) and \(gist.files.count - 1) more"
+            } else {
+                title = gist.firstFilename
+            }
+            
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
+            dateFormatter.timeStyle = .MediumStyle
+            
+            // let _ = dateFormatter.dateFromString(gist.createdAt)
+            
+            cell.titleLabel.stringValue = title
+            cell.subtitleLabel.stringValue = dateFormatter.stringFromDate(gist.createdAt!)
             cell.setGistUrl(NSURL(string: gist.htmlUrl)!)
             cell.descriptionLabel.stringValue = gist.gistDescription
             
-            if (gist.isPublic) {
+            if (gist.isGistPublic) {
                 cell.privateIcon.stringValue = "\u{f023}"
             }
             
@@ -252,7 +305,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
             
-            let selectedGist = self.searchResults[gistTableView.clickedRow] as Gist!
+            let selectedGist = self.gists[gistTableView.clickedRow] as Gist!
             
             gistInfoViewController.loader = self.loader
             gistInfoViewController.loadedGist = selectedGist

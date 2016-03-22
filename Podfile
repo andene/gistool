@@ -5,5 +5,6 @@ use_frameworks!
 target 'GistTool' do
 
     pod 'p2.OAuth2'
+    pod 'RealmSwift'
 
 end

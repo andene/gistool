@@ -24,6 +24,7 @@
 		E18159611C99EC26003368A2 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18159601C99EC26003368A2 /* TextFieldExtension.swift */; };
 		E18159641C9BE8A1003368A2 /* Gist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18159631C9BE8A1003368A2 /* Gist.swift */; };
 		E18159661C9C32A6003368A2 /* GistInfoTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18159651C9C32A6003368A2 /* GistInfoTableCell.swift */; };
+		E19006C51C9EDEAE005CDF90 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19006C41C9EDEAE005CDF90 /* File.swift */; };
 		E1B643CF1C8F602A0060FE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643CE1C8F602A0060FE69 /* AppDelegate.swift */; };
 		E1B643D11C8F602A0060FE69 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643D01C8F602A0060FE69 /* ViewController.swift */; };
 		E1B643D31C8F602A0060FE69 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1B643D21C8F602A0060FE69 /* Assets.xcassets */; };
@@ -70,6 +71,7 @@
 		E18159601C99EC26003368A2 /* TextFieldExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
 		E18159631C9BE8A1003368A2 /* Gist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gist.swift; sourceTree = "<group>"; };
 		E18159651C9C32A6003368A2 /* GistInfoTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GistInfoTableCell.swift; sourceTree = "<group>"; };
+		E19006C41C9EDEAE005CDF90 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		E1B643CB1C8F602A0060FE69 /* GistTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GistTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1B643CE1C8F602A0060FE69 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1B643D01C8F602A0060FE69 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				E18159631C9BE8A1003368A2 /* Gist.swift */,
+				E19006C41C9EDEAE005CDF90 /* File.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E18159641C9BE8A1003368A2 /* Gist.swift in Sources */,
+				E19006C51C9EDEAE005CDF90 /* File.swift in Sources */,
 				E18159611C99EC26003368A2 /* TextFieldExtension.swift in Sources */,
 				E181595A1C974E4A003368A2 /* FontAwesomeButton.swift in Sources */,
 				E181595D1C98873E003368A2 /* GistInfoViewController.swift in Sources */,
