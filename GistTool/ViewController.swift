@@ -75,10 +75,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         super.viewDidLoad()
 
         
-        // Setup realm config
-        //setupRealmConfiguration()
-        
-        
+        // Setup realm
         self.realm = try! Realm()
         
         
@@ -95,8 +92,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
         // Search field
         setupSearchField()
-
-
         
         // Setup Github loader
         self.loader = GithubLoader()
@@ -193,24 +188,25 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func searchInGists(query:String?=nil) {
         
-        let realm = try! Realm()
         
         if let searchQuery = query {
+            
             let searchDescription = NSPredicate(format: "SELF.gistDescription CONTAINS[c] %@", searchQuery)
             let searchFilename = NSPredicate(format: "SELF.firstFilename CONTAINS[c] %@", searchQuery)
+            let fileSearch = NSPredicate(format: "ANY SELF.files.content CONTAINS[c] %@", searchQuery)
             
-            let searchCompound = NSCompoundPredicate(type: NSCompoundPredicateType.OrPredicateType, subpredicates: [searchDescription, searchFilename])
-
-            self.gists = realm.objects(Gist).filter(searchCompound).sorted("updatedAt", ascending: false)
+            let searchCompound = NSCompoundPredicate(type: NSCompoundPredicateType.OrPredicateType, subpredicates: [searchDescription, searchFilename, fileSearch])
+            self.gists = self.realm.objects(Gist).filter(searchCompound).sorted("updatedAt", ascending: false)
+            
         } else {
-            self.gists = realm.objects(Gist).sorted("updatedAt", ascending: false)
+            self.gists = self.realm.objects(Gist).sorted("updatedAt", ascending: false)
         }
         self.reloadGistTableView()
 
     }
     
     func loadGists() {
-        
+     
         loader.requestGists() { gists, error in
             self.gists = self.realm.objects(Gist).sorted("updatedAt", ascending: false)
             self.reloadGistTableView()
@@ -287,7 +283,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             // let _ = dateFormatter.dateFromString(gist.createdAt)
             
             cell.titleLabel.stringValue = title
-            cell.subtitleLabel.stringValue = dateFormatter.stringFromDate(gist.createdAt!)
+            cell.subtitleLabel.stringValue = "Updated \(dateFormatter.stringFromDate(gist.updatedAt!))"
             cell.setGistUrl(NSURL(string: gist.htmlUrl)!)
             cell.descriptionLabel.stringValue = gist.gistDescription
             
@@ -301,20 +297,34 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
     }
 
+    override func keyDown(theEvent: NSEvent) {
+        interpretKeyEvents([theEvent])
+    }
+    
+    override func insertNewline(sender: AnyObject?) {
+        print("Pressed enter")
+        openGistInfor(gistTableView.selectedRow)
+    }
+    
     func gistTableViewDoubleClick(sender: AnyObject) {
-
+        openGistInfor(gistTableView.clickedRow)
+    }
+    
+    
+    /*
+    * Open a sheet with Gist information
+    * @param {int} row The current selected row in tableview
+    */
+    func openGistInfor(row: Int) {
+        
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
-            
-            let selectedGist = self.gists[gistTableView.clickedRow] as Gist!
-            
+            let selectedGist = self.gists[row] as Gist!
             gistInfoViewController.loader = self.loader
             gistInfoViewController.loadedGist = selectedGist
             
             self.presentViewControllerAsSheet(gistInfoViewController)
-
         }
     }
-    
     
     
     @IBAction func didSearch(sender: NSSearchField) {

@@ -87,12 +87,14 @@ class GithubLoader {
                                         let url = "gists/" + id
 
                                         self.requestGistFiles(url) { gistFiles, error in
-                                            for file in gistFiles! {
-                                                try! realm.write() {
-                                                    gistRecord.files.append(file)
+                                            if let foundGistFiles = gistFiles {
+                                                for file in foundGistFiles {
+                                                    try! realm.write() {
+                                                        gistRecord.files.append(file)
+                                                    }
                                                 }
-                                                
                                             }
+                                            
                                         }
                                     }
                                 }
@@ -174,15 +176,16 @@ class GithubLoader {
                                 if let files = gist["files"] as? NSDictionary {
                                     
                                     let gistFileArray = self.handleGistFiles(files)
+
                                 
                                     for file in gistFileArray {
                                         guard let filename = file["filename"] as? String,
                                             let size = file["size"] as? Int,
                                             let rawUrl = file["raw_url"] as? String,
-                                            let language = file["language"] as? String,
                                             let content = file["content"] as? String,
                                             let type = file["type"] as? String
                                             else {
+                                                print("Files for gist \(gistFileArray)")
                                                 callback(gistFiles: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
                                                 break
                                         }
@@ -192,6 +195,11 @@ class GithubLoader {
                                             isTruncated = true
                                         }
                                     
+                                        var language = ""
+                                        if let fileLanguage = file["language"] as? String {
+                                            language = fileLanguage
+                                        }
+                                        
                                         let gistFile = File(filename: filename,
                                             size: size,
                                             rawUrl: rawUrl,

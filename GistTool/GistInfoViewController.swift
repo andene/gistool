@@ -14,7 +14,6 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
     @IBOutlet weak var closeButton: FontAwesomeButton!
     @IBOutlet weak var descriptionLabel: NSTextField!
     @IBOutlet weak var dateLabel: NSTextField!
-    
     @IBOutlet weak var filesTableView: NSTableView!
     
     var loader: GithubLoader!
@@ -29,38 +28,40 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         
         setupTableView()
         
+        
         if let gist = self.loadedGist {
-            
-            self.loader.requestSingleGist(gist.gistId) { gists, error in
-                print("Loaded single gist done", gists)
-            }
-            
-            
             
             descriptionLabel.useLatoWithSize(14.0, bold: true)
             descriptionLabel.textColor = ViewController.getLightTextColor()
             descriptionLabel.stringValue = gist.gistDescription
             
             let dateFormatter = NSDateFormatter()
-            //dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-
-            //dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
-            //dateFormatter.timeStyle = .MediumStyle
+            dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
+            dateFormatter.timeStyle = .MediumStyle
             
-           // let _ = dateFormatter.dateFromString(gist.createdAt)
+            let created = dateFormatter.stringFromDate(gist.createdAt!)
+            let updated = dateFormatter.stringFromDate(gist.updatedAt!)
             
             dateLabel.useLatoWithSize(10.0, bold: false)
             dateLabel.textColor = ViewController.getMediumTextColor()
-            dateLabel.stringValue = "Created at \(gist.createdAt), Updated at \(gist.updatedAt)"
+            dateLabel.stringValue = "Created at \(created), Updated at \(updated)"
         }
         
+    }
+    
+    override func keyDown(theEvent: NSEvent) {
+        interpretKeyEvents([theEvent])
+    }
+    
+    override func cancelOperation(sender: AnyObject?) {
+        dismissController(sender)
     }
     
     // Setup stuff on table view
     func setupTableView() {
         filesTableView.setDataSource(self)
         filesTableView.setDelegate(self)
-        filesTableView.rowHeight = 65.0
+        filesTableView.rowHeight = 200.0
         filesTableView.target = self
         filesTableView.doubleAction = "gistTableViewDoubleClick:"
         filesTableView.backgroundColor = ViewController.getBackgroundColor()
@@ -80,6 +81,21 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         
         if let cell = tableView.makeViewWithIdentifier("mainCell", owner: nil) as? GistInfoTableCell {
             cell.filenameLabel.stringValue = filename
+            
+            
+            let titleFont = NSFont(name: "Lato", size: 13.0)
+            
+            
+            let pstyle = NSMutableParagraphStyle()
+            
+            let attributedTitle = NSAttributedString(string: file.content, attributes: [
+                NSForegroundColorAttributeName : ViewController.getMediumTextColor(),
+                NSParagraphStyleAttributeName : pstyle,
+                NSFontAttributeName: titleFont!
+                
+                ])
+            
+            cell.textView.textStorage?.appendAttributedString(attributedTitle)
             
             return cell
         }
