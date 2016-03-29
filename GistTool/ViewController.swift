@@ -11,6 +11,7 @@ import Quartz
 import RealmSwift
 
 let OAuth2AppDidReceiveCallbackNotification = "OAuth2AppDidReceiveCallback"
+let GistToolPuchasedPro = "GistToolPuchasedPro"
 
 
 enum ServiceError: ErrorType {
@@ -24,6 +25,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     @IBOutlet weak var settingsButton: FontAwesomeButton!
     @IBOutlet weak var refreshButton: FontAwesomeButton!
+    @IBOutlet weak var newButton: FontAwesomeButton!
     @IBOutlet weak var gistTableView: NSTableView!
     @IBOutlet weak var avatarImage: NSImageView!
     @IBOutlet weak var username: NSButton!
@@ -36,6 +38,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var realm: Realm
     var user: NSDictionary!
     var darkThemeEnabled:Bool!
+    var userDefaults = NSUserDefaults.standardUserDefaults()
+    var goProWindow: NSWindowController?
     
     static func getBackgroundColor() -> NSColor {
         return NSColor(calibratedRed: CGFloat(20.0/255), green: CGFloat(21.0/255), blue: CGFloat(20.0/255), alpha: 1.0)
@@ -49,6 +53,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     static func getMediumTextColor() -> NSColor {
         return NSColor(calibratedRed: CGFloat(150.0/255), green: CGFloat(150.0/255), blue: CGFloat(150.0/255), alpha: 1)
+    }
+    static func getDarkTextColor() -> NSColor {
+        return NSColor(calibratedRed: CGFloat(30.0/255), green: CGFloat(30.0/255), blue: CGFloat(30.0/255), alpha: 1)
+    }
+    static func getWhiteBackgroundColor() -> NSColor {
+        return NSColor(calibratedRed: CGFloat(240.0/255), green: CGFloat(240.0/255), blue: CGFloat(240.0/255), alpha: 1)
     }
     
 
@@ -72,17 +82,21 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     
     override func viewDidLoad() {
+        
+        let fontManager = FontManager()
+        fontManager.loadFont("fontawesome-webfont", fontExtension: "ttf")
+        fontManager.loadFont("Lato-Regular", fontExtension: "ttf")
+        fontManager.loadFont("Lato-Bold", fontExtension: "ttf")
+        fontManager.loadFont("Lato-Light", fontExtension: "ttf")
+        
         super.viewDidLoad()
-
         
         // Setup realm
         self.realm = try! Realm()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handlePurchasedPro:", name: GistToolPuchasedPro, object: nil)
         
-        let userDefault = NSUserDefaults.standardUserDefaults()
-        if let useDarkTheme = userDefault.boolForKey("darkTheme") as? Bool{
-            darkThemeEnabled = useDarkTheme
-        }
+        let _ = userDefaults.boolForKey("darkTheme")
         
         // Layer
         view.wantsLayer = true
@@ -102,31 +116,29 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         // Setup refresh button
         refreshButton.updateTitle("\u{f021}", fontSize: CGFloat(22.0))
         
+        // Setup create button
+        newButton.updateTitle("\u{f067}", fontSize: CGFloat(22.0))
+        
         // Setup GistTableView
         setupGistTableView()
        
-        //hLine.boxType = NSBoxType.Custom
-        //hLine.borderType = NSBorderType.LineBorder
-        //hLine.borderColor = NSColor(calibratedRed: CGFloat(240/255), green: CGFloat(240/255), blue: CGFloat(240/255), alpha: 1)
-        
+        updateLoginStatus()
+    }
+    
+    func updateLoginStatus() {
         if self.loader.isAuthorized() {
             isSignedIn()
-        
         } else {
-            refreshButton.hidden = true
+            isSignedOut()
         }
     }
     
     func isSignedIn() {
-        
         refreshButton.hidden = false
-        
         loadGists()
-        
         loader.requestUserdata() { user, error in
             if let githubUser = user {
-                
-                self.user = githubUser
+                self.user = githubUser as! NSDictionary
                 self.setLoggedinName(githubUser["name"] as! String)
                 self.loadAvatarImage(githubUser["avatar_url"] as! String)
             }
@@ -134,9 +146,25 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     func isSignedOut() {
+        refreshButton.hidden = true
         
+        if let _ = self.user {
+            self.user = nil
+        }
+
+
+        self.setLoggedinName("Not authorized")
+        self.avatarImage.hidden = true
+        loadGists()
     }
     
+    func getURLForUser() -> String? {
+        if let userURL = self.user?["html_url"] as? String {
+            return userURL
+        } else {
+            return nil
+        }
+    }
     
     override func viewDidAppear() {
         if !self.loader.isAuthorized() {
@@ -147,7 +175,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     // Open user profile on github when clicking on username
     @IBAction func usernameClicked(sender: NSButton) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: self.user["html_url"] as! String)!)
+        if let userURL = getURLForUser() as String? {
+            NSWorkspace.sharedWorkspace().openURL(NSURL(string: userURL)!)
+        }
+
     }
     
     func setupRealmConfiguration() {
@@ -166,6 +197,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func setupSearchField() {
         searchField.sendsSearchStringImmediately = true
+        searchField.wantsLayer = true
         searchField.drawsBackground = true
         searchField.backgroundColor = ViewController.getLighBackgroundColor()
         searchField.textColor = ViewController.getMediumTextColor()
@@ -222,6 +254,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
                 guard let data = data where error == nil else { return }
                 let image = NSImage(data: data)
                 image!.size = NSSize(width: 30, height: 30)
+                self.avatarImage.hidden = false
                 self.avatarImage.image = image
             }
         }.resume()
@@ -231,7 +264,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     func setupGistTableView() {
         gistTableView.setDataSource(self)
         gistTableView.setDelegate(self)
-        gistTableView.rowHeight = 65.0
+        gistTableView.rowHeight = 75.0
         gistTableView.target = self
         gistTableView.doubleAction = "gistTableViewDoubleClick:"
         gistTableView.backgroundColor = ViewController.getBackgroundColor()
@@ -297,44 +330,87 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
     }
 
+    
+    /*
+    * Handle keyDown events and pass it to interpretKeyEvents function
+    */
     override func keyDown(theEvent: NSEvent) {
         interpretKeyEvents([theEvent])
     }
     
+    
+    /*
+    * When users presses enter in the table view
+    */
     override func insertNewline(sender: AnyObject?) {
-        print("Pressed enter")
-        openGistInfor(gistTableView.selectedRow)
+        let selectedRow = gistTableView.selectedRow;
+        if selectedRow >= 0 {
+            let gist = getGistForRow(gistTableView.selectedRow)
+            openGistInfo(gist)
+        }
     }
     
+    
+    /*
+    * User double clicks a row in table view
+    */
     func gistTableViewDoubleClick(sender: AnyObject) {
-        openGistInfor(gistTableView.clickedRow)
+        let gist = getGistForRow(gistTableView.clickedRow)
+        openGistInfo(gist)
     }
+    
+    
+    /*
+    * Get a Gist object from index in tableview
+    * @param {Int} row Which row index in gistTableView
+    * @return Gist
+    */
+    func getGistForRow(row: Int) -> Gist {
+        let selectedGist = self.gists[row] as Gist!
+        return selectedGist
+    }
+    
     
     
     /*
     * Open a sheet with Gist information
     * @param {int} row The current selected row in tableview
     */
-    func openGistInfor(row: Int) {
+    
+    func openGistInfo(gist: Gist) {
         
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
-            let selectedGist = self.gists[row] as Gist!
+
             gistInfoViewController.loader = self.loader
-            gistInfoViewController.loadedGist = selectedGist
-            
+            gistInfoViewController.loadedGist = gist
             self.presentViewControllerAsSheet(gistInfoViewController)
         }
     }
     
     
+    
+    /*
+    * Action sent from search form
+    */
+    
     @IBAction func didSearch(sender: NSSearchField) {
         let searchQuery = sender.stringValue
         
-        if searchQuery.characters.count > 0 {
-            searchInGists(sender.stringValue)
+        if !userDefaults.boolForKey("isPro") && searchQuery.characters.count > 0 {
+            openGoProWindowController(sender)
         } else {
-            searchInGists()
+    
+            
+            if searchQuery.characters.count > 0 {
+                searchInGists(sender.stringValue)
+            } else {
+                searchInGists()
+            }
         }
+        
+
+        
+        
     }
     
     
@@ -348,6 +424,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
                 view.window?.beginSheet(singleServiceViewController.view.window!, completionHandler: { responseCode in
                     if responseCode == NSModalResponseOK {
                         self.isSignedIn()
+                    } else if responseCode == NSModalResponseStop {
+                        self.updateLoginStatus()
                     }
 
                 })
@@ -358,8 +436,35 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         throw ServiceError.NoViewController
     }
     
-    
+    @IBAction func goProClicked(sender: AnyObject) {
+        openGoProWindowController(sender)
+    }
 
+    func openGoProWindowController(sender: AnyObject) {
+        if let windowController = storyboard?.instantiateControllerWithIdentifier("GoProWindowController") as? NSWindowController {
+            if let _ = windowController.contentViewController as? GoProViewController {
+                print("Open \(windowController)")
+                windowController.showWindow(sender)
+                goProWindow = windowController
+                return 
+            }
+        }
+    }
+
+    @IBAction func newGist(sender: FontAwesomeButton) {
+        
+        let newGist = Gist(gistId: "0",
+            description: "",
+            htmlUrl: "",
+            createdAt: NSDate(),
+            updatedAt: NSDate(),
+            isGistPublic: true,
+            firstFilename: "gisttool.js")
+        
+        openGistInfo(newGist)
+        
+        
+    }
     @IBAction func authButtonClicked(sender: NSButton) {
         try! openViewControllerWithLoader(self.loader, sender: sender)
     }
@@ -367,5 +472,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     @IBAction func refreshGists(sender: FontAwesomeButton) {
         loadGists()
     }
+    
+    func handlePurchasedPro(notification: NSNotification) {
+        print("Notification recieved")
+    }
+    
 }
 

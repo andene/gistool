@@ -26,7 +26,7 @@ class SingleServiceViewController: NSViewController {
         self.view.wantsLayer = true
         
         signInLabel.useLatoWithSize(CGFloat(13.0),  bold: false)
-        closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
+        //closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
         
         let userDefault = NSUserDefaults.standardUserDefaults()
         if let firstTime = userDefault.boolForKey("firstTimeRunning") as? Bool{
@@ -53,12 +53,14 @@ class SingleServiceViewController: NSViewController {
     }
     
     @IBAction func emptyDatabase(sender: AnyObject) {
-        
+        deleteAllObjectsInDatabase()
+    }
+    
+    func deleteAllObjectsInDatabase() {
         let realm = try! Realm()
         try! realm.write() {
             realm.deleteAll()
         }
-        
     }
     
     // Close window with button
@@ -91,7 +93,12 @@ class SingleServiceViewController: NSViewController {
     
     
     @IBAction func forgetTokens(sender: NSButton) {
+        deleteAllObjectsInDatabase()
         loader.oauth2.forgetTokens()
+        
+        view.window!.sheetParent?.endSheet(self.view.window!, returnCode: NSModalResponseStop)
+        view.window?.close()
+        
     }
     
     

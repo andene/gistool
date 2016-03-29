@@ -13,14 +13,6 @@ import RealmSwift
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    
-    func applicationDidBecomeActive(notification: NSNotification) {
-        
-        
-    }
-    
-    
-    
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         
         
@@ -30,9 +22,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             forEventClass: AEEventClass(kInternetEventClass),
             andEventID: AEEventID(kAEGetURL))
         
-        print("Loaded...")
     }
     
+    
+    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
+        return true;
+    }
     
     
        /**

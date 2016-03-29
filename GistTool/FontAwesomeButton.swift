@@ -19,7 +19,6 @@ class FontAwesomeButton: NSButton {
        
         let titleFont = NSFont(name: "FontAwesome", size: fontSize)
         
-        
         let pstyle = NSMutableParagraphStyle()
         
         let attributedTitle = NSAttributedString(string: title, attributes: [

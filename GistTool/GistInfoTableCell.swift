@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class GistInfoTableCell: NSTableCellView {
+class GistInfoTableCell: NSTableCellView, NSUserNotificationCenterDelegate {
 
     @IBOutlet var filenameLabel: NSTextField!
     @IBOutlet var textView: NSTextView!
@@ -20,19 +20,18 @@ class GistInfoTableCell: NSTableCellView {
     }
     
     override func awakeFromNib() {
-        filenameLabel.useLatoWithSize(13.0, bold: true)
+        filenameLabel.useLatoWithSize(14.0, bold: true)
         filenameLabel.textColor = ViewController.getLightTextColor()
 
-        textView.textColor = ViewController.getLightTextColor()
+        textView.textColor = ViewController.getDarkTextColor()
         textView.textContainerInset = NSSize(width: 5, height: 10)
         
-        copyButton.updateTitle("\u{f0c5}", fontSize: 13.0)
+        copyButton.updateTitle("\u{f0c5}", fontSize: 16.0)
         
         
         fileScrollView.drawsBackground = true
-        fileScrollView.backgroundColor = ViewController.getLighBackgroundColor()
+        fileScrollView.backgroundColor = ViewController.getWhiteBackgroundColor()
         fileScrollView.wantsLayer = true
-        fileScrollView.layer?.cornerRadius = 10.0
         
 
         
@@ -44,9 +43,22 @@ class GistInfoTableCell: NSTableCellView {
         
         pasteBoard.clearContents()
         if let textStorage = textView.textStorage {
+            
+            let notification = NSUserNotification()
+            notification.title = "Gist copied"
+//            notification.informativeText = "The body of this Swift notification"
+            
+            let notificationCenter = NSUserNotificationCenter.defaultUserNotificationCenter()
+            notificationCenter.delegate = self
+            notificationCenter.deliverNotification(notification)
+            
             pasteBoard.writeObjects([textStorage.string])
         }
 
         
+    }
+    
+    func userNotificationCenter(center: NSUserNotificationCenter, shouldPresentNotification notification: NSUserNotification) -> Bool {
+        return true
     }
 }

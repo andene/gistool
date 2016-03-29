@@ -68,6 +68,12 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         
     }
     
+    
+    func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        let tableRow = GistTableRow()
+        return tableRow
+    }
+    
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let file = loadedGist.files[row] 
@@ -89,7 +95,7 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
             let pstyle = NSMutableParagraphStyle()
             
             let attributedTitle = NSAttributedString(string: file.content, attributes: [
-                NSForegroundColorAttributeName : ViewController.getMediumTextColor(),
+                NSForegroundColorAttributeName : ViewController.getDarkTextColor(),
                 NSParagraphStyleAttributeName : pstyle,
                 NSFontAttributeName: titleFont!
                 

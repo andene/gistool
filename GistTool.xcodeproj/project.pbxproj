@@ -26,6 +26,9 @@
 		E18159661C9C32A6003368A2 /* GistInfoTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18159651C9C32A6003368A2 /* GistInfoTableCell.swift */; };
 		E19006C51C9EDEAE005CDF90 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19006C41C9EDEAE005CDF90 /* File.swift */; };
 		E19006C71CA3E2D9005CDF90 /* FileTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19006C61CA3E2D9005CDF90 /* FileTextView.swift */; };
+		E19006CA1CA477A2005CDF90 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19006C91CA477A2005CDF90 /* Line.swift */; };
+		E19006CE1CA5BC47005CDF90 /* GoProViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19006CD1CA5BC47005CDF90 /* GoProViewController.swift */; };
+		E19006D01CA81F8A005CDF90 /* FontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19006CF1CA81F8A005CDF90 /* FontManager.swift */; };
 		E1B643CF1C8F602A0060FE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643CE1C8F602A0060FE69 /* AppDelegate.swift */; };
 		E1B643D11C8F602A0060FE69 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643D01C8F602A0060FE69 /* ViewController.swift */; };
 		E1B643D31C8F602A0060FE69 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1B643D21C8F602A0060FE69 /* Assets.xcassets */; };
@@ -74,6 +77,9 @@
 		E18159651C9C32A6003368A2 /* GistInfoTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GistInfoTableCell.swift; sourceTree = "<group>"; };
 		E19006C41C9EDEAE005CDF90 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		E19006C61CA3E2D9005CDF90 /* FileTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTextView.swift; sourceTree = "<group>"; };
+		E19006C91CA477A2005CDF90 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		E19006CD1CA5BC47005CDF90 /* GoProViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoProViewController.swift; sourceTree = "<group>"; };
+		E19006CF1CA81F8A005CDF90 /* FontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontManager.swift; sourceTree = "<group>"; };
 		E1B643CB1C8F602A0060FE69 /* GistTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GistTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1B643CE1C8F602A0060FE69 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1B643D01C8F602A0060FE69 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -173,6 +179,22 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		E19006C81CA47794005CDF90 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				E19006C91CA477A2005CDF90 /* Line.swift */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		E19006CC1CA5BC39005CDF90 /* GoPro */ = {
+			isa = PBXGroup;
+			children = (
+				E19006CD1CA5BC47005CDF90 /* GoProViewController.swift */,
+			);
+			name = GoPro;
+			sourceTree = "<group>";
+		};
 		E1B643C21C8F602A0060FE69 = {
 			isa = PBXGroup;
 			children = (
@@ -198,6 +220,8 @@
 		E1B643CD1C8F602A0060FE69 /* GistTool */ = {
 			isa = PBXGroup;
 			children = (
+				E19006CC1CA5BC39005CDF90 /* GoPro */,
+				E19006C81CA47794005CDF90 /* ui */,
 				E18159621C9BE736003368A2 /* Model */,
 				E181595B1C988729003368A2 /* GistInfo */,
 				E18159541C961D2C003368A2 /* resources */,
@@ -212,6 +236,7 @@
 				E12258171C940E850052691C /* GithubLoader.swift */,
 				E18159591C974E4A003368A2 /* FontAwesomeButton.swift */,
 				E18159601C99EC26003368A2 /* TextFieldExtension.swift */,
+				E19006CF1CA81F8A005CDF90 /* FontManager.swift */,
 			);
 			path = GistTool;
 			sourceTree = "<group>";
@@ -432,13 +457,16 @@
 				E19006C51C9EDEAE005CDF90 /* File.swift in Sources */,
 				E18159611C99EC26003368A2 /* TextFieldExtension.swift in Sources */,
 				E181595A1C974E4A003368A2 /* FontAwesomeButton.swift in Sources */,
+				E19006CA1CA477A2005CDF90 /* Line.swift in Sources */,
 				E181595D1C98873E003368A2 /* GistInfoViewController.swift in Sources */,
 				E18159561C973918003368A2 /* GistTableRow.swift in Sources */,
 				E12258181C940E850052691C /* GithubLoader.swift in Sources */,
 				E1B643D11C8F602A0060FE69 /* ViewController.swift in Sources */,
 				E122581A1C9416160052691C /* SingleServiceViewController.swift in Sources */,
 				E18159491C9607D1003368A2 /* GistTableCell.swift in Sources */,
+				E19006CE1CA5BC47005CDF90 /* GoProViewController.swift in Sources */,
 				E1B643CF1C8F602A0060FE69 /* AppDelegate.swift in Sources */,
+				E19006D01CA81F8A005CDF90 /* FontManager.swift in Sources */,
 				E18159661C9C32A6003368A2 /* GistInfoTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -576,7 +604,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = GistTool/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Oak.GistTool;
+				PRODUCT_BUNDLE_IDENTIFIER = io.vift.gisttool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -591,7 +619,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = GistTool/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Oak.GistTool;
+				PRODUCT_BUNDLE_IDENTIFIER = io.vift.gisttool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

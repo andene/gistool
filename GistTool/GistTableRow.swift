@@ -14,6 +14,8 @@ class GistTableRow: NSTableRowView {
     override func drawRect(dirtyRect: NSRect) {
         super.drawRect(dirtyRect)
         
+        
+        
         self.layer?.cornerRadius = 10.0
         
         if selected {
