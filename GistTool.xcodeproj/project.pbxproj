@@ -35,6 +35,10 @@
 		E1B643D61C8F602A0060FE69 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E1B643D41C8F602A0060FE69 /* Main.storyboard */; };
 		E1B643E11C8F602B0060FE69 /* GistToolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643E01C8F602B0060FE69 /* GistToolTests.swift */; };
 		E1B643EC1C8F602B0060FE69 /* GistToolUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B643EB1C8F602B0060FE69 /* GistToolUITests.swift */; };
+		E1F3DB571CAC40DC0030397D /* EditableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F3DB561CAC40DC0030397D /* EditableTextField.swift */; };
+		E1F3DB5A1CAC42E80030397D /* GistInfoControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F3DB591CAC42E80030397D /* GistInfoControllerDelegate.swift */; };
+		E1F3DB5C1CAD15F40030397D /* GistInfoTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F3DB5B1CAD15F40030397D /* GistInfoTableRow.swift */; };
+		E1F3DB5E1CAD55C50030397D /* Dialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F3DB5D1CAD55C50030397D /* Dialog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +96,10 @@
 		E1B643E71C8F602B0060FE69 /* GistToolUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GistToolUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1B643EB1C8F602B0060FE69 /* GistToolUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GistToolUITests.swift; sourceTree = "<group>"; };
 		E1B643ED1C8F602B0060FE69 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1F3DB561CAC40DC0030397D /* EditableTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTextField.swift; sourceTree = "<group>"; };
+		E1F3DB591CAC42E80030397D /* GistInfoControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GistInfoControllerDelegate.swift; sourceTree = "<group>"; };
+		E1F3DB5B1CAD15F40030397D /* GistInfoTableRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GistInfoTableRow.swift; sourceTree = "<group>"; };
+		E1F3DB5D1CAD55C50030397D /* Dialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +174,7 @@
 				E181595C1C98873E003368A2 /* GistInfoViewController.swift */,
 				E18159651C9C32A6003368A2 /* GistInfoTableCell.swift */,
 				E19006C61CA3E2D9005CDF90 /* FileTextView.swift */,
+				E1F3DB5B1CAD15F40030397D /* GistInfoTableRow.swift */,
 			);
 			name = GistInfo;
 			sourceTree = "<group>";
@@ -183,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				E19006C91CA477A2005CDF90 /* Line.swift */,
+				E1F3DB5D1CAD55C50030397D /* Dialog.swift */,
 			);
 			name = ui;
 			sourceTree = "<group>";
@@ -193,6 +203,13 @@
 				E19006CD1CA5BC47005CDF90 /* GoProViewController.swift */,
 			);
 			name = GoPro;
+			sourceTree = "<group>";
+		};
+		E1989AB51CAAF6E600202F65 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Extension;
 			sourceTree = "<group>";
 		};
 		E1B643C21C8F602A0060FE69 = {
@@ -220,6 +237,8 @@
 		E1B643CD1C8F602A0060FE69 /* GistTool */ = {
 			isa = PBXGroup;
 			children = (
+				E1F3DB581CAC42CD0030397D /* Protocol */,
+				E1989AB51CAAF6E600202F65 /* Extension */,
 				E19006CC1CA5BC39005CDF90 /* GoPro */,
 				E19006C81CA47794005CDF90 /* ui */,
 				E18159621C9BE736003368A2 /* Model */,
@@ -237,6 +256,7 @@
 				E18159591C974E4A003368A2 /* FontAwesomeButton.swift */,
 				E18159601C99EC26003368A2 /* TextFieldExtension.swift */,
 				E19006CF1CA81F8A005CDF90 /* FontManager.swift */,
+				E1F3DB561CAC40DC0030397D /* EditableTextField.swift */,
 			);
 			path = GistTool;
 			sourceTree = "<group>";
@@ -257,6 +277,14 @@
 				E1B643ED1C8F602B0060FE69 /* Info.plist */,
 			);
 			path = GistToolUITests;
+			sourceTree = "<group>";
+		};
+		E1F3DB581CAC42CD0030397D /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				E1F3DB591CAC42E80030397D /* GistInfoControllerDelegate.swift */,
+			);
+			name = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -455,14 +483,18 @@
 				E19006C71CA3E2D9005CDF90 /* FileTextView.swift in Sources */,
 				E18159641C9BE8A1003368A2 /* Gist.swift in Sources */,
 				E19006C51C9EDEAE005CDF90 /* File.swift in Sources */,
+				E1F3DB571CAC40DC0030397D /* EditableTextField.swift in Sources */,
 				E18159611C99EC26003368A2 /* TextFieldExtension.swift in Sources */,
 				E181595A1C974E4A003368A2 /* FontAwesomeButton.swift in Sources */,
 				E19006CA1CA477A2005CDF90 /* Line.swift in Sources */,
 				E181595D1C98873E003368A2 /* GistInfoViewController.swift in Sources */,
 				E18159561C973918003368A2 /* GistTableRow.swift in Sources */,
 				E12258181C940E850052691C /* GithubLoader.swift in Sources */,
+				E1F3DB5C1CAD15F40030397D /* GistInfoTableRow.swift in Sources */,
+				E1F3DB5E1CAD55C50030397D /* Dialog.swift in Sources */,
 				E1B643D11C8F602A0060FE69 /* ViewController.swift in Sources */,
 				E122581A1C9416160052691C /* SingleServiceViewController.swift in Sources */,
+				E1F3DB5A1CAC42E80030397D /* GistInfoControllerDelegate.swift in Sources */,
 				E18159491C9607D1003368A2 /* GistTableCell.swift in Sources */,
 				E19006CE1CA5BC47005CDF90 /* GoProViewController.swift in Sources */,
 				E1B643CF1C8F602A0060FE69 /* AppDelegate.swift in Sources */,

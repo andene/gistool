@@ -18,6 +18,8 @@ class File: Object {
     dynamic var isTruncated: Bool = false
     dynamic var content: String = ""
     dynamic var gistId: String = ""
+    dynamic var oldFilename: String?
+    dynamic var isDeleted: Bool = false
     
     convenience init(filename: String, size: Int, rawUrl: String, type: String, language: String, isTruncated: Bool, content: String, gistId: String) {
         self.init()

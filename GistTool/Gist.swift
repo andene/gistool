@@ -10,6 +10,8 @@ import RealmSwift
 
 class Gist: Object {
 
+    static var temporaryGistId = "gisttooltemp"
+    
     dynamic var gistId: String!
     dynamic var gistDescription:String!
     dynamic var htmlUrl: String!
@@ -44,5 +46,60 @@ class Gist: Object {
             
     }
     
+    func deleteGistAndFiles() {
+        let realm = try! Realm()
+        
+        try! realm.write {
+            for file in self.files {
+                realm.delete(file)
+            }
+        }
+        
+        try! realm.write() {
+            realm.delete(self)
+        }
+    }
+    
+    func toJSONData() -> NSData? {
+        
+        var files = [String: AnyObject]()
+        
+        for file in self.files {
+            
+            if file.isDeleted {
+                files[file.filename] = NSNull()
+            } else {
+                
+                if let oldFilename = file.oldFilename {
+                    files[oldFilename] = [
+                        "filename": file.filename,
+                        "content": file.content
+                    ]
+                } else {
+                    files[file.filename] = [
+                        "content": file.content
+                    ]
+                }
+                
+            }
+        }
+        
+        let gistJSON: [String: AnyObject] = [
+            "description": "\(self.gistDescription)",
+            "files": files
+        ]
+        
+        do {
+            let gistData = try NSJSONSerialization.dataWithJSONObject(gistJSON, options: NSJSONWritingOptions())
+            
+            print("\(NSString(data: gistData, encoding: NSUTF8StringEncoding))")
+            
+            return gistData
+            //return NSString(data: gistData, encoding: NSUTF8StringEncoding) as? String
+        } catch _ {
+            return nil
+        }
+        
+    }
 
 }

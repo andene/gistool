@@ -10,20 +10,14 @@ import Cocoa
 
 class FileTextView: NSTextView {
     
-    override func drawRect(dirtyRect: NSRect) {
-        
-        
+    override func awakeFromNib() {
         self.drawsBackground = true
         self.backgroundColor = ViewController.getLighBackgroundColor()
-        self.wantsLayer = true
-        self.layer?.borderWidth = 0
-        self.textColor = ViewController.getLightTextColor()
+        self.insertionPointColor = ViewController.getLightTextColor()
         
-        
-        if var textStorage = self.textStorage {
-            
+        if let textStorage = self.textStorage {
             let textRange = NSRange.init(location: 0, length: textStorage.length)
-            textStorage.addAttribute(NSForegroundColorAttributeName, value: ViewController.getLightTextColor(), range: textRange)
+            textStorage.addAttribute(NSForegroundColorAttributeName, value: ViewController.getMediumTextColor(), range: textRange)
             
         }
     }

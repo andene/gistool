@@ -10,6 +10,7 @@ import Cocoa
 
 extension NSTextField {
     
+    
     func useLatoWithSize(fontSize: CGFloat, bold: Bool) {
         let color = NSColor(calibratedRed: CGFloat(50.0/255), green: CGFloat(50.0/255), blue: CGFloat(50.0/255), alpha: 1)
         

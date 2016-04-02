@@ -8,19 +8,15 @@
 
 import Cocoa
 
-class GistTableRow: NSTableRowView {
-
-
+class GistInfoTableRow: NSTableRowView {
+    
+    
     override func drawRect(dirtyRect: NSRect) {
         super.drawRect(dirtyRect)
         
-        
-        
-       // self.layer?.cornerRadius = 10.0
-        
         if selected {
             
-            ViewController.getLighBackgroundColor().setFill()
+            ViewController.getBackgroundColor().setFill()
             NSRectFill(dirtyRect)
         }
     }

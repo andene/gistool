@@ -20,7 +20,7 @@ enum ServiceError: ErrorType {
 }
 
 
-class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, GistInfoControllerDelegate {
 
     
     @IBOutlet weak var settingsButton: FontAwesomeButton!
@@ -65,10 +65,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     required init?(coder: NSCoder) {
         
         let config = Realm.Configuration(
-            schemaVersion: 2,
+            schemaVersion: 3,
             
             migrationBlock: { migration, oldSchemaVersion in
-                if (oldSchemaVersion < 2) {
+                if (oldSchemaVersion < 3) {
                 }
         })
         
@@ -94,7 +94,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         // Setup realm
         self.realm = try! Realm()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handlePurchasedPro:", name: GistToolPuchasedPro, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.handlePurchasedPro), name: GistToolPuchasedPro, object: nil)
         
         let _ = userDefaults.boolForKey("darkTheme")
         
@@ -138,7 +138,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         loadGists()
         loader.requestUserdata() { user, error in
             if let githubUser = user {
-                self.user = githubUser as! NSDictionary
+                self.user = githubUser
                 self.setLoggedinName(githubUser["name"] as! String)
                 self.loadAvatarImage(githubUser["avatar_url"] as! String)
             }
@@ -219,7 +219,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     func searchInGists(query:String?=nil) {
-        
         
         if let searchQuery = query {
             
@@ -330,6 +329,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
     }
 
+    //MARK - Key events
     
     /*
     * Handle keyDown events and pass it to interpretKeyEvents function
@@ -347,6 +347,31 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         if selectedRow >= 0 {
             let gist = getGistForRow(gistTableView.selectedRow)
             openGistInfo(gist)
+        }
+    }
+    
+    override func deleteBackward(sender: AnyObject?) {
+        let selectedRow = gistTableView.selectedRow;
+        if selectedRow >= 0 {
+            
+            if Dialog.dialogOKCancel("Delete Gist", text: "Are you sure you want to delete this Gist? ") {
+            
+                let gist = getGistForRow(selectedRow)
+                
+                loader.deleteGist(gist) { statusCode, error in
+                    // Successfully removed gist from github, just in case remove from Realm
+                    if error != nil {
+                        print("error \(error)")
+                    } else if statusCode! == 204  {
+                        gist.deleteGistAndFiles()
+                        self.loadGists()
+                    } else if statusCode == 404 {
+                        // Gist not found on github so just delete the local file
+                        gist.deleteGistAndFiles()
+                    } else {
+                    }
+                }
+            }
         }
     }
     
@@ -381,12 +406,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
         if let gistInfoViewController = storyboard?.instantiateControllerWithIdentifier("GistInfoView") as? GistInfoViewController {
 
-            gistInfoViewController.loader = self.loader
+            gistInfoViewController.loader = loader
+            gistInfoViewController.delegate = self
             gistInfoViewController.loadedGist = gist
             self.presentViewControllerAsSheet(gistInfoViewController)
+            
         }
     }
     
+    
+    func didUpdateGist(gistDictionary: NSDictionary) {
+        //print("Gist is updated \(gistDictionary)")
+        loadGists()
+    }
     
     
     /*
@@ -407,10 +439,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
                 searchInGists()
             }
         }
-        
-
-        
-        
     }
     
     
@@ -443,7 +471,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     func openGoProWindowController(sender: AnyObject) {
         if let windowController = storyboard?.instantiateControllerWithIdentifier("GoProWindowController") as? NSWindowController {
             if let _ = windowController.contentViewController as? GoProViewController {
-                print("Open \(windowController)")
                 windowController.showWindow(sender)
                 goProWindow = windowController
                 return 
@@ -453,14 +480,40 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     @IBAction func newGist(sender: FontAwesomeButton) {
         
-        let newGist = Gist(gistId: "0",
-            description: "",
-            htmlUrl: "",
-            createdAt: NSDate(),
-            updatedAt: NSDate(),
-            isGistPublic: true,
-            firstFilename: "gisttool.js")
+        /*
+         self.filename = filename
+         self.size = size
+         self.rawUrl = rawUrl
+         self.type = type
+         self.language = language
+         self.isTruncated = isTruncated
+         self.content = content
+         self.gistId = gistId
+ */
+        let file = File(value: [
+                "filename": "gisttools.js",
+                "size": 0,
+                "rawUrl": "http://",
+                "type": "Javascript",
+                "language": "Javascript",
+                "isTruncated": false,
+                "content": "content",
+                "gistId": Gist.temporaryGistId
+            ])
         
+        let newGist = Gist(value: ["gistId": Gist.temporaryGistId,
+            "gistDescription": "Description of gist",
+            "htmlUrl": "",
+            "createdAt": NSDate(),
+            "updatedAt": NSDate(),
+            "isGistPublic": true,
+            "firstFilename": "gisttool.js",
+            "files": [file]
+            ])
+        
+        try! realm.write {
+            realm.add(newGist)
+        }
         openGistInfo(newGist)
         
         

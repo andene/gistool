@@ -10,10 +10,14 @@ import Cocoa
 
 class GistInfoTableCell: NSTableCellView, NSUserNotificationCenterDelegate {
 
-    @IBOutlet var filenameLabel: NSTextField!
+    @IBOutlet var filenameLabel: EditableTextField!
     @IBOutlet var textView: NSTextView!
     @IBOutlet weak var fileScrollView: NSScrollView!
     @IBOutlet weak var copyButton: FontAwesomeButton!
+    @IBOutlet weak var deleteFileButton: FontAwesomeButton!
+    
+    var viewController: GistInfoViewController?
+    var file: File!
     
     override func drawRect(dirtyRect: NSRect) {
         
@@ -22,19 +26,22 @@ class GistInfoTableCell: NSTableCellView, NSUserNotificationCenterDelegate {
     override func awakeFromNib() {
         filenameLabel.useLatoWithSize(14.0, bold: true)
         filenameLabel.textColor = ViewController.getLightTextColor()
+        filenameLabel.backgroundColor = ViewController.getBackgroundColor()
+        filenameLabel.focusRingType = NSFocusRingType.None
+
 
         textView.textColor = ViewController.getDarkTextColor()
-        textView.textContainerInset = NSSize(width: 5, height: 10)
+        textView.textContainerInset = NSSize(width: 10, height: 10)
         
         copyButton.updateTitle("\u{f0c5}", fontSize: 16.0)
+        deleteFileButton.updateTitle("\u{f014}", fontSize: 16.0)
         
-        
-        fileScrollView.drawsBackground = true
-        fileScrollView.backgroundColor = ViewController.getWhiteBackgroundColor()
-        fileScrollView.wantsLayer = true
-        
-
-        
+    }
+    @IBAction func deleteFile(sender: AnyObject) {
+        if let vc = self.viewController {
+            
+            vc.deleteFile(self.file)
+        }
     }
     
     @IBAction func copyToClipboard(sender: FontAwesomeButton) {

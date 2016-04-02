@@ -3,10 +3,50 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "GistInfoViewController.viewDidLoad() -&gt; ():GistInfoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "descriptionText.window">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GistInfoViewController.save(AnyObject) -&gt; ():GistInfoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "loadedGist">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "ViewController.openViewControllerWithLoader(GithubLoader, sender : NSButton?) throws -&gt; ():ViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "windowController.contentViewController a">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "SingleServiceViewController.viewDidLoad() -&gt; ():SingleServiceViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "(lldb) po Realm.defaultPath">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GithubLoader.createOrUpdateGist(Gist, method : String, appendGistId : Bool, callback : (dict : NSDictionary?, error : ErrorType?) -&gt; ()) -&gt; ():GithubLoader.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "gist">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GistInfoViewController.numberOfRowsInTableView(NSTableView) -&gt; Int:GistInfoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "loadedGist">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -22,10 +62,13 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "SingleServiceViewController.viewDidLoad() -&gt; ():SingleServiceViewController.swift">
+         contextName = "GistInfoTableCell.deleteFile(AnyObject) -&gt; ():GistInfoTableCell.swift">
          <PersistentStrings>
             <PersistentString
-               value = "(lldb) po Realm.defaultPath">
+               value = "">
+            </PersistentString>
+            <PersistentString
+               value = "NSApplication.sharedApplication().keyWindow">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -37,6 +80,14 @@
             </PersistentString>
             <PersistentString
                value = "gistRecords.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GistInfoViewController.getFilesNotDeleted() -&gt; Results&lt;File&gt;:GistInfoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "loadedGist">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

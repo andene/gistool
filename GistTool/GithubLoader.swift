@@ -332,6 +332,101 @@ class GithubLoader {
         }.resume()
     }
     
+    func updateGist(gist: Gist, method: String, callback: ((dict: NSDictionary?, error: ErrorType?) -> Void)) {
+        
+        var url = baseURL.URLByAppendingPathComponent("gists")
+        
+        if method == "PATCH" {
+            url = baseURL.URLByAppendingPathComponent("gists").URLByAppendingPathComponent(gist.gistId)
+        }
+        
+        let request = oauth2.request(forURL: url)
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
+        
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Content-Type")
+        
+        print("URL \(url)")
+        
+        request.HTTPMethod = method
+        
+        if let jsonFromGist = gist.toJSONData() {
+            request.HTTPBody = jsonFromGist
+        
+            let jsonString = NSString(data: jsonFromGist, encoding: NSUTF8StringEncoding)
+            
+            if let json = jsonString {
+                request.setValue("\(json.length)", forHTTPHeaderField: "Content-Length")
+            }
+            
+        }
+        
+        NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+            
+            if let _ = response as? NSHTTPURLResponse {
+                
+            }
+            if nil != error {
+                dispatch_async(dispatch_get_main_queue()) {
+                    callback(dict: nil, error: error)
+                }
+            } else {
+                do {
+                    let dict = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(dict: dict, error: nil)
+                    }
+                }
+                catch let error {
+                    print("Error \(error)")
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(dict: nil, error: error)
+                    }
+                }
+
+            }
+            }.resume()
+   
+    }
+    
+    func deleteGist(gist: Gist, callback: ((statusCode: Int?, error: ErrorType?) -> Void)) {
+        
+        let url = baseURL.URLByAppendingPathComponent("gists").URLByAppendingPathComponent(gist.gistId)
+        let request = oauth2.request(forURL: url)
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
+        
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        
+        print("URL \(url)")
+        
+        request.HTTPMethod = "DELETE"
+        
+        NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+            
+            if nil != error {
+                dispatch_async(dispatch_get_main_queue()) {
+                    callback(statusCode: nil, error: error)
+                }
+            } else {
+                do {
+                    
+                    if let httpResponse = response as? NSHTTPURLResponse {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            callback(statusCode: httpResponse.statusCode, error: nil)
+                        }
+                    }
+                    
+                }
+                catch let error {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(statusCode: nil, error: error)
+                    }
+                }
+                
+            }
+            }.resume()
+        
+    }
     
     func requestUserdata(callback: ((dict: NSDictionary?, error: ErrorType?) -> Void)) {
         requestSingle("user", callback: callback)
