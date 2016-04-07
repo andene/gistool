@@ -10,9 +10,20 @@ import Cocoa
 
 class FontAwesomeButton: NSButton {
     
+    var cursor: NSCursor?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
        
+        
+    }
+    
+    override func resetCursorRects() {
+        if let cursor = self.cursor {
+            self.addCursorRect(self.bounds, cursor: cursor)
+        } else {
+            self.addCursorRect(self.bounds, cursor: NSCursor.pointingHandCursor())
+        }
     }
     
     func updateTitle(title: String, fontSize: CGFloat) {

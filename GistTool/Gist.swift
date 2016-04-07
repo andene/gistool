@@ -86,6 +86,7 @@ class Gist: Object {
         
         let gistJSON: [String: AnyObject] = [
             "description": "\(self.gistDescription)",
+            "public": self.isGistPublic.boolValue,
             "files": files
         ]
         

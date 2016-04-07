@@ -12,4 +12,6 @@ protocol GistInfoControllerDelegate: class {
     
     func didUpdateGist(gistDictionary: NSDictionary)
     
+    func openGoProWindowController(sender: AnyObject)
+    
 }

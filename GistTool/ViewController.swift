@@ -12,7 +12,9 @@ import RealmSwift
 
 let OAuth2AppDidReceiveCallbackNotification = "OAuth2AppDidReceiveCallback"
 let GistToolPuchasedPro = "GistToolPuchasedPro"
-
+let OpenGoProNotification = "openGoProWindow"
+let OpenSettingsNotification = "openSettings"
+let DarkThemeChangedNotification = "darkThemeChanged"
 
 enum ServiceError: ErrorType {
     case NoViewController
@@ -32,6 +34,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     @IBOutlet weak var hLine: NSBox!
     @IBOutlet weak var searchField: NSSearchField!
     @IBOutlet weak var searchFieldCell: NSSearchFieldCell!
+    @IBOutlet weak var spinner: NSProgressIndicator!
     
     var loader: GithubLoader!
     var gists: Results<Gist>!
@@ -40,22 +43,48 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var darkThemeEnabled:Bool!
     var userDefaults = NSUserDefaults.standardUserDefaults()
     var goProWindow: NSWindowController?
+    var goProView: GoProViewController?
     
     static func getBackgroundColor() -> NSColor {
-        return NSColor(calibratedRed: CGFloat(20.0/255), green: CGFloat(21.0/255), blue: CGFloat(20.0/255), alpha: 1.0)
+        let userDefault = NSUserDefaults.standardUserDefaults()
+
+        if userDefault.boolForKey("darkTheme") {
+            return NSColor(calibratedRed: CGFloat(20.0/255), green: CGFloat(21.0/255), blue: CGFloat(20.0/255), alpha: 1.0)
+        } else {
+            return NSColor(calibratedRed: CGFloat(250.0/255), green: CGFloat(250.0/255), blue: CGFloat(250.0/255), alpha: 1.0)
+        }
+        
+        
     }
     
     static func getLighBackgroundColor() -> NSColor {
-        return NSColor(calibratedRed: CGFloat(40.0/255), green: CGFloat(40.0/255), blue: CGFloat(40.0/255), alpha: 1.0)
+        if NSUserDefaults.standardUserDefaults().boolForKey("darkTheme") {
+            return NSColor(calibratedRed: CGFloat(40.0/255), green: CGFloat(40.0/255), blue: CGFloat(40.0/255), alpha: 1.0)
+        } else {
+            return NSColor(calibratedRed: CGFloat(210.0/255), green: CGFloat(210.0/255), blue: CGFloat(210.0/255), alpha: 1.0)
+        }
+        
     }
     static func getLightTextColor() -> NSColor {
-        return NSColor(calibratedRed: CGFloat(240.0/255), green: CGFloat(240.0/255), blue: CGFloat(240.0/255), alpha: 1)
+        if NSUserDefaults.standardUserDefaults().boolForKey("darkTheme") {
+            return NSColor(calibratedRed: CGFloat(240.0/255), green: CGFloat(240.0/255), blue: CGFloat(240.0/255), alpha: 1)
+        } else {
+            return NSColor(calibratedRed: CGFloat(30/255), green: CGFloat(30.0/255), blue: CGFloat(30.0/255), alpha: 1)
+        }
+        
     }
     static func getMediumTextColor() -> NSColor {
         return NSColor(calibratedRed: CGFloat(150.0/255), green: CGFloat(150.0/255), blue: CGFloat(150.0/255), alpha: 1)
     }
     static func getDarkTextColor() -> NSColor {
-        return NSColor(calibratedRed: CGFloat(30.0/255), green: CGFloat(30.0/255), blue: CGFloat(30.0/255), alpha: 1)
+        
+        if NSUserDefaults.standardUserDefaults().boolForKey("darkTheme") {
+            return NSColor(calibratedRed: CGFloat(200.0/255), green: CGFloat(200.0/255), blue: CGFloat(200.0/255), alpha: 1)
+        } else {
+            return NSColor(calibratedRed: CGFloat(50/255), green: CGFloat(50.0/255), blue: CGFloat(50.0/255), alpha: 1)
+        }
+        
+        
     }
     static func getWhiteBackgroundColor() -> NSColor {
         return NSColor(calibratedRed: CGFloat(240.0/255), green: CGFloat(240.0/255), blue: CGFloat(240.0/255), alpha: 1)
@@ -75,13 +104,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         Realm.Configuration.defaultConfiguration = config
 
         self.realm = try! Realm()
-        
+
         super.init(coder: coder)
     }
 
     
     
     override func viewDidLoad() {
+        
+        
+        //let userDefaults = NSUserDefaults.standardUserDefaults()
+        //userDefaults.setBool(false, forKey: "isPro")
         
         let fontManager = FontManager()
         fontManager.loadFont("fontawesome-webfont", fontExtension: "ttf")
@@ -95,6 +128,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         self.realm = try! Realm()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.handlePurchasedPro), name: GistToolPuchasedPro, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.authButtonClicked), name: OpenSettingsNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.openGoProWindowController), name: OpenGoProNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.darkthemeToggled), name: DarkThemeChangedNotification, object: nil)
+        
+        
+        // Clean up any temporary gists created in database
+        cleanupTemporaryRecordsInDatabase()
         
         let _ = userDefaults.boolForKey("darkTheme")
         
@@ -119,10 +160,44 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         // Setup create button
         newButton.updateTitle("\u{f067}", fontSize: CGFloat(22.0))
         
-        // Setup GistTableView
-        setupGistTableView()
+        
+        
+        setupElements()
+        
+        setupSpinner()
        
         updateLoginStatus()
+    }
+    
+    func setupElements() {
+        // Setup GistTableView
+        setupGistTableView()
+        setupBackground()
+        
+        hLine.hidden = true
+        hLine.hidden = false
+    }
+    
+    func darkthemeToggled() {
+        setupElements()
+        reloadGistTableView()
+    }
+    
+    func cleanupTemporaryRecordsInDatabase() {
+        
+        if let tempGist = realm.objects(Gist).filter("gistId = %@", Gist.temporaryGistId).first {
+            try! realm.write {
+                for file in tempGist.files {
+                    realm.delete(file)
+                }
+            }
+            
+            try! self.realm.write() {
+                realm.delete(tempGist)
+            }
+        }
+        
+        
     }
     
     func updateLoginStatus() {
@@ -135,11 +210,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func isSignedIn() {
         refreshButton.hidden = false
+        newButton.hidden = false
         loadGists()
         loader.requestUserdata() { user, error in
             if let githubUser = user {
+                print("\(githubUser)")
                 self.user = githubUser
-                self.setLoggedinName(githubUser["name"] as! String)
+                self.setLoggedinName(githubUser["login"] as! String)
                 self.loadAvatarImage(githubUser["avatar_url"] as! String)
             }
         }
@@ -147,6 +224,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     func isSignedOut() {
         refreshButton.hidden = true
+        newButton.hidden = true
         
         if let _ = self.user {
             self.user = nil
@@ -209,7 +287,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         let pstyle = NSMutableParagraphStyle()
         
         let attributedTitle = NSAttributedString(string: name, attributes: [
-            NSForegroundColorAttributeName : ViewController.getLightTextColor(),
+            NSForegroundColorAttributeName : ViewController.getMediumTextColor(),
             NSParagraphStyleAttributeName : pstyle,
             NSFontAttributeName: buttonFont!
             
@@ -236,11 +314,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     }
     
+    func setupSpinner() {
+        spinner.style = NSProgressIndicatorStyle.SpinningStyle
+    }
+    
     func loadGists() {
-     
+        spinner.startAnimation([])
         loader.requestGists() { gists, error in
             self.gists = self.realm.objects(Gist).sorted("updatedAt", ascending: false)
             self.reloadGistTableView()
+            self.spinner.stopAnimation([])
         }
     }
     
@@ -270,9 +353,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
     }
 
-    override func viewWillAppear() {
+    func setupBackground() {
         let backgroundColor = ViewController.getBackgroundColor()
         view.layer?.backgroundColor = backgroundColor.CGColor
+    }
+    override func viewWillAppear() {
+        setupBackground()
     }
     
     
@@ -319,7 +405,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             cell.setGistUrl(NSURL(string: gist.htmlUrl)!)
             cell.descriptionLabel.stringValue = gist.gistDescription
             
-            if (gist.isGistPublic) {
+            if (!gist.isGistPublic) {
                 cell.privateIcon.stringValue = "\u{f023}"
             }
             
@@ -361,7 +447,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
                 loader.deleteGist(gist) { statusCode, error in
                     // Successfully removed gist from github, just in case remove from Realm
                     if error != nil {
-                        print("error \(error)")
+                        Dialog.showError("An error occured", text: "Could not delete Gist")
                     } else if statusCode! == 204  {
                         gist.deleteGistAndFiles()
                         self.loadGists()
@@ -415,8 +501,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     
+    /*
+    * Delegate method called when user updated a Gist
+    */
     func didUpdateGist(gistDictionary: NSDictionary) {
-        //print("Gist is updated \(gistDictionary)")
         loadGists()
     }
     
@@ -470,9 +558,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     func openGoProWindowController(sender: AnyObject) {
         if let windowController = storyboard?.instantiateControllerWithIdentifier("GoProWindowController") as? NSWindowController {
-            if let _ = windowController.contentViewController as? GoProViewController {
+            if let viewController = windowController.contentViewController as? GoProViewController {
+                
                 windowController.showWindow(sender)
                 goProWindow = windowController
+                goProView = viewController
                 return 
             }
         }
@@ -527,7 +617,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     func handlePurchasedPro(notification: NSNotification) {
-        print("Notification recieved")
+        
+        dispatch_sync(dispatch_get_main_queue()) {
+            Dialog.showInformation("Thanks!", text: "Thank you very much for buying GistTool Pro Edition")
+        }
+        
+        
+        
     }
     
 }

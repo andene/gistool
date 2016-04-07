@@ -28,9 +28,9 @@ class GistInfoTableCell: NSTableCellView, NSUserNotificationCenterDelegate {
         filenameLabel.textColor = ViewController.getLightTextColor()
         filenameLabel.backgroundColor = ViewController.getBackgroundColor()
         filenameLabel.focusRingType = NSFocusRingType.None
-
-
-        textView.textColor = ViewController.getDarkTextColor()
+        
+        
+        textView.textColor = ViewController.getLightTextColor()
         textView.textContainerInset = NSSize(width: 10, height: 10)
         
         copyButton.updateTitle("\u{f0c5}", fontSize: 16.0)
@@ -53,8 +53,6 @@ class GistInfoTableCell: NSTableCellView, NSUserNotificationCenterDelegate {
             
             let notification = NSUserNotification()
             notification.title = "Gist copied"
-//            notification.informativeText = "The body of this Swift notification"
-            
             let notificationCenter = NSUserNotificationCenter.defaultUserNotificationCenter()
             notificationCenter.delegate = self
             notificationCenter.deliverNotification(notification)

@@ -23,4 +23,22 @@ class Dialog {
         }
         return false
     }
+    
+    class func showInformation(title: String, text: String) {
+        let myPopup: NSAlert = NSAlert()
+        myPopup.messageText = title
+        myPopup.informativeText = text
+        myPopup.alertStyle = NSAlertStyle.InformationalAlertStyle
+        myPopup.addButtonWithTitle("OK")
+        myPopup.runModal()
+    }
+    
+    class func showError(title: String, text: String) {
+        let myPopup: NSAlert = NSAlert()
+        myPopup.messageText = title
+        myPopup.informativeText = text
+        myPopup.alertStyle = NSAlertStyle.CriticalAlertStyle
+        myPopup.addButtonWithTitle("OK")
+        myPopup.runModal()
+    }
 }

@@ -12,7 +12,6 @@ extension NSTextField {
     
     
     func useLatoWithSize(fontSize: CGFloat, bold: Bool) {
-        let color = NSColor(calibratedRed: CGFloat(50.0/255), green: CGFloat(50.0/255), blue: CGFloat(50.0/255), alpha: 1)
         
         var fontName = "Lato"
         
@@ -21,7 +20,7 @@ extension NSTextField {
         }
         
         self.font = NSFont(name: fontName, size: fontSize)
-        self.textColor = color
+        self.textColor = ViewController.getDarkTextColor()
     }
     
 }

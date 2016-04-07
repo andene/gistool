@@ -17,7 +17,11 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
     @IBOutlet weak var descriptionText: EditableTextField!
     @IBOutlet weak var dateLabel: NSTextField!
     @IBOutlet weak var filesTableView: NSTableView!
+    @IBOutlet weak var addFileButton: FontAwesomeButton!
     
+    @IBOutlet weak var secretGistCheckbox: NSButton!
+    
+    @IBOutlet weak var loadingSpinner: NSProgressIndicator!
     
     weak var delegate: GistInfoControllerDelegate?
     
@@ -31,11 +35,17 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         // Layer
         view.wantsLayer = true
         
-        closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
-        saveButton.updateTitle("\u{f00c}", fontSize: 22.0)
+        closeButton.updateTitle("\u{f00d} Close", fontSize: 14.0)
+        closeButton.cursor = NSCursor.pointingHandCursor()
+        saveButton.updateTitle("\u{f00c} Save", fontSize: 14.0)
         
+        
+
+        addFileButton.updateTitle("\u{f067} Add File", fontSize: 14.0)
         setupTableView()
         
+        setColors()
+        setupSecretCheckbox()
         
         if let gist = self.loadedGist {
             
@@ -57,6 +67,31 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
             dateLabel.textColor = ViewController.getMediumTextColor()
             dateLabel.stringValue = "Created at \(created), Updated at \(updated)"
         }
+        
+    }
+    
+    func setupSecretCheckbox() {
+        if loadedGist!.gistId == Gist.temporaryGistId {
+            secretGistCheckbox.hidden = false
+        } else {
+            secretGistCheckbox.hidden = true
+        }
+        if loadedGist!.isGistPublic {
+            secretGistCheckbox.integerValue = 0
+        }
+    }
+    
+    func setColors() {
+        
+        let titleFont = NSFont(name: "Lato", size: 13.0)
+        let pstyle = NSMutableParagraphStyle()
+        let attributedTitle = NSAttributedString(string: "Secret Gist", attributes: [
+            NSForegroundColorAttributeName : ViewController.getLightTextColor(),
+            NSParagraphStyleAttributeName : pstyle,
+            NSFontAttributeName: titleFont!
+            
+            ])
+        secretGistCheckbox.attributedTitle = attributedTitle
         
     }
     
@@ -105,27 +140,30 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         
         
         if let cell = tableView.makeViewWithIdentifier("mainCell", owner: nil) as? GistInfoTableCell {
+            
+            
+            
             cell.filenameLabel.stringValue = filename
             cell.filenameLabel.editable = true
             
             cell.viewController = self
             cell.file = file
             
-            let titleFont = NSFont(name: "Menlo", size: 12.0)
+            let titleFont = NSFont(name: "Menlo", size: 13.0)
             
             
             let pstyle = NSMutableParagraphStyle()
             
             let attributedTitle = NSAttributedString(string: file.content, attributes: [
-                NSForegroundColorAttributeName : ViewController.getMediumTextColor(),
+                NSForegroundColorAttributeName : ViewController.getLightTextColor(),
                 NSParagraphStyleAttributeName : pstyle,
                 NSFontAttributeName: titleFont!
                 
                 ])
             
             cell.textView.textStorage?.appendAttributedString(attributedTitle)
-            
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.textViewDidEndEditing), name: NSTextDidEndEditingNotification, object: cell.textView)
+            cell.textView.font = titleFont!
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.textViewDidEndEditing), name: NSTextDidChangeNotification, object: cell.textView)
             
             
             return cell
@@ -133,6 +171,7 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         return nil
         
     }
+    
     
     func textViewDidEndEditing(notification: NSNotification) {
         
@@ -152,9 +191,17 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
     
     
     @IBAction func save(sender: AnyObject) {
-
+        loadingSpinner.startAnimation([])
+        let secret = secretGistCheckbox.integerValue
+        
         try! self.realm.write() {
             loadedGist!.gistDescription = descriptionText.stringValue
+            if secret == 0 {
+                loadedGist!.isGistPublic = true
+            } else {
+                loadedGist!.isGistPublic = false
+            }
+            
         }
         
         
@@ -165,10 +212,21 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         }
         
         loader.updateGist(loadedGist!, method: httpMethod) { data, error in
+            //self.spinner.stopAnimation(sender)
             self.delegate?.didUpdateGist(data!)
             self.closeModal(sender as! NSButton)
         }
         
+        
+    }
+    @IBAction func secretGistClicked(sender: NSButton) {
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        if !userDefaults.boolForKey("isPro") {
+            self.delegate?.openGoProWindowController(sender)
+            secretGistCheckbox.integerValue = 0
+        } else {
+            print("Toggle")
+        }
         
     }
     
@@ -242,6 +300,28 @@ class GistInfoViewController: NSViewController, NSTableViewDataSource, NSTableVi
         removeTemporaryGistFromRealm()
         dismissController(sender)
 
+    }
+    @IBAction func addFile(sender: FontAwesomeButton) {
+        
+        let file = File(value: [
+            "filename": "gisttools.js",
+            "size": 0,
+            "rawUrl": "http://",
+            "type": "Javascript",
+            "language": "Javascript",
+            "isTruncated": false,
+            "content": "content",
+            "gistId": loadedGist!.gistId
+            ])
+        
+        try! self.realm.write() {
+            loadedGist!.files.append(file)
+            
+            filesTableView.reloadData()
+        }
+        
+        
+        
     }
     @IBAction func closeModal(sender: NSButton) {
         closeSheet(sender)

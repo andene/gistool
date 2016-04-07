@@ -22,11 +22,10 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
-                                        <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW"/>
-                                        <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
-                                        <menuItem title="Services" id="NMo-om-nkz">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
+                                        <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
+                                            <connections>
+                                                <action selector="preferencesClicked:" target="Voe-Tx-rLC" id="oSI-Tk-QxM"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
                                         <menuItem title="Hide GistTool" keyEquivalent="h" id="Olw-nP-bQN">
@@ -59,13 +58,23 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="Empty database" id="wAe-Rb-mQT">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="Empty database" id="KaW-ft-85H">
+                                        <menuItem title="Empty local cache" id="KaW-ft-85H">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="revertDocumentToSaved:" target="Ady-hI-5gd" id="iJ3-Pv-kwq"/>
+                                                <action selector="emptyLocalCache:" target="Voe-Tx-rLC" id="esw-Ka-FRU"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Buy Pro" id="vUI-Vz-qNS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Buy Pro" id="GWJ-4x-Bp8">
+                                    <items>
+                                        <menuItem title="Purchase GistTool Pro" id="gck-tw-sSi">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="buyProClicked:" target="Voe-Tx-rLC" id="YIV-e9-10D"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -532,25 +541,6 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="View" id="H8h-7b-M4v">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="View" id="HyV-fh-RgO">
-                                    <items>
-                                        <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="toggleToolbarShown:" target="Ady-hI-5gd" id="BXY-wc-z0C"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Customize Toolbar…" id="1UK-8n-QPP">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
                             <menuItem title="Window" id="aUF-d1-5bR">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
@@ -582,7 +572,7 @@
                                     <items>
                                         <menuItem title="GistTool Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                             <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
+                                                <action selector="helpClicked:" target="Voe-Tx-rLC" id="ZyK-Wh-8EW"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -594,7 +584,12 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="GistTool" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="GistTool" customModuleProvider="target">
+                    <connections>
+                        <outlet property="MainMenu" destination="AYu-sK-qS6" id="EsI-Rh-an7"/>
+                        <outlet property="helpClicked" destination="FKE-Sm-Kum" id="bvM-hO-LGM"/>
+                    </connections>
+                </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
@@ -606,7 +601,7 @@
                     <window key="window" title="GistTool - For GitHub" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="contentRect" x="632" y="381" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                     </window>
                     <connections>
@@ -640,11 +635,11 @@
             <objects>
                 <viewController storyboardIdentifier="SingleServiceViewController" id="W5A-lS-WFc" customClass="SingleServiceViewController" customModule="GistTool" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="wLV-Ym-yv9">
-                        <rect key="frame" x="0.0" y="0.0" width="400" height="262"/>
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="304"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gKQ-Lb-9LR">
-                                <rect key="frame" x="133" y="110" width="134" height="32"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gKQ-Lb-9LR">
+                                <rect key="frame" x="133" y="199" width="134" height="32"/>
                                 <buttonCell key="cell" type="push" title="Sign in" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Zh0-AT-jGn">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -653,13 +648,9 @@
                                     <action selector="beginAuth:" target="W5A-lS-WFc" id="Mp3-NT-1bP"/>
                                 </connections>
                             </button>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v2D-c0-dMw">
-                                <rect key="frame" x="69" y="149" width="260" height="75"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="Oqf-lg-mfR"/>
-                            </imageView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="21a-b4-qWg" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
-                                <rect key="frame" x="369" y="20" width="11" height="32"/>
-                                <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressTemplate" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="Asl-r2-PPK">
+                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="21a-b4-qWg" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="369" y="62" width="11" height="32"/>
+                                <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="Asl-r2-PPK">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -667,42 +658,108 @@
                                     <action selector="closeWindow:" target="W5A-lS-WFc" id="mIh-CI-JiA"/>
                                 </connections>
                             </button>
-                            <box verticalHuggingPriority="750" misplaced="YES" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="IEC-f9-BZV">
-                                <rect key="frame" x="20" y="94" width="353" height="5"/>
-                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <font key="titleFont" metaFont="system"/>
-                            </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zXs-nw-ILD">
-                                <rect key="frame" x="94" y="211" width="162" height="23"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sign in using" id="TFL-NG-nij">
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="cQK-XP-1NN">
+                                <rect key="frame" x="13" y="272" width="374" height="17"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Multiline Label" id="NnJ-qT-3nZ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eUk-hZ-lfj">
-                                <rect key="frame" x="14" y="13" width="138" height="32"/>
-                                <buttonCell key="cell" type="push" title="Empty database" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GxG-S6-y4R">
+                            <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="Jij-E8-TNS">
+                                <rect key="frame" x="15" y="245" width="370" height="5"/>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zXs-nw-ILD">
+                                <rect key="frame" x="13" y="209" width="101" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Github account:" id="TFL-NG-nij">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ifq-iT-OUL">
+                                <rect key="frame" x="13" y="172" width="78" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Dark theme:" id="nGg-N0-Jod">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2rs-vV-nhn">
+                                <rect key="frame" x="13" y="135" width="106" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="GistTool Version:" id="Zym-1c-LTt">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <box horizontalHuggingPriority="246" verticalHuggingPriority="750" misplaced="YES" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="IEC-f9-BZV">
+                                <rect key="frame" x="15" y="106" width="353" height="5"/>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="aJj-xL-m0U">
+                                <rect key="frame" x="137" y="169" width="137" height="18"/>
+                                <buttonCell key="cell" type="check" title="Enable Dark theme" bezelStyle="regularSquare" imagePosition="left" inset="2" id="UMd-T8-k8u">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="toggleDarkTheme:" target="W5A-lS-WFc" id="jYD-DE-CV6"/>
+                                </connections>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rtZ-hC-nQI">
+                                <rect key="frame" x="137" y="135" width="66" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Standard" id="zRc-N1-7JL">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="i19-On-sJd">
+                                <rect key="frame" x="247" y="126" width="144" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="132" id="ASy-Iy-p1i"/>
+                                </constraints>
+                                <buttonCell key="cell" type="push" title="Upgrade to Pro" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Z32-as-5L3">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="emptyDatabase:" target="W5A-lS-WFc" id="jej-bo-7LP"/>
+                                    <action selector="upgradeToProClicked:" target="W5A-lS-WFc" id="Qgc-rV-ZOY"/>
                                 </connections>
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="v2D-c0-dMw" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="69" id="3Ag-7I-pT3"/>
-                            <constraint firstItem="gKQ-Lb-9LR" firstAttribute="top" secondItem="v2D-c0-dMw" secondAttribute="bottom" constant="11" id="H3m-aF-htr"/>
-                            <constraint firstAttribute="trailing" secondItem="v2D-c0-dMw" secondAttribute="trailing" constant="71" id="Jll-jS-UHU"/>
-                            <constraint firstItem="IEC-f9-BZV" firstAttribute="top" secondItem="gKQ-Lb-9LR" secondAttribute="bottom" constant="20" id="VcL-lP-Wh3"/>
-                            <constraint firstItem="IEC-f9-BZV" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="20" id="WR9-h0-w9N"/>
-                            <constraint firstAttribute="trailing" secondItem="IEC-f9-BZV" secondAttribute="trailing" constant="20" id="XQ1-lm-qU9"/>
-                            <constraint firstItem="gKQ-Lb-9LR" firstAttribute="top" secondItem="v2D-c0-dMw" secondAttribute="bottom" constant="11" id="gRu-pq-Q3Z"/>
+                            <constraint firstItem="aJj-xL-m0U" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="139" id="63f-g5-CGQ"/>
+                            <constraint firstAttribute="trailing" secondItem="i19-On-sJd" secondAttribute="trailing" constant="15" id="6GF-5u-Fq5"/>
+                            <constraint firstAttribute="trailing" secondItem="IEC-f9-BZV" secondAttribute="trailing" constant="15" id="9fx-vf-qzp"/>
+                            <constraint firstAttribute="trailing" secondItem="cQK-XP-1NN" secondAttribute="trailing" constant="15" id="9oi-Nn-4Hm"/>
+                            <constraint firstAttribute="trailing" secondItem="Jij-E8-TNS" secondAttribute="trailing" constant="15" id="9uO-9N-gtI"/>
+                            <constraint firstItem="2rs-vV-nhn" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="15" id="BOq-IW-ZD0"/>
+                            <constraint firstItem="IEC-f9-BZV" firstAttribute="top" secondItem="rtZ-hC-nQI" secondAttribute="bottom" constant="20" id="EPR-fa-9pT"/>
+                            <constraint firstItem="IEC-f9-BZV" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="15" id="GDF-tW-6Pu"/>
+                            <constraint firstItem="2rs-vV-nhn" firstAttribute="top" secondItem="Ifq-iT-OUL" secondAttribute="bottom" constant="20" id="H3Y-XW-jAa"/>
+                            <constraint firstItem="Ifq-iT-OUL" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="15" id="Jz1-wT-clF"/>
+                            <constraint firstItem="i19-On-sJd" firstAttribute="centerY" secondItem="rtZ-hC-nQI" secondAttribute="centerY" id="KIX-n1-QqO"/>
+                            <constraint firstItem="zXs-nw-ILD" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="15" id="St1-Nh-CxG"/>
+                            <constraint firstItem="Jij-E8-TNS" firstAttribute="top" secondItem="cQK-XP-1NN" secondAttribute="bottom" constant="24" id="TSg-Fz-d96"/>
+                            <constraint firstItem="i19-On-sJd" firstAttribute="leading" secondItem="rtZ-hC-nQI" secondAttribute="trailing" constant="52" id="Tje-s5-OZ9"/>
+                            <constraint firstItem="Jij-E8-TNS" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="15" id="Vvf-B4-KVH"/>
+                            <constraint firstItem="gKQ-Lb-9LR" firstAttribute="top" secondItem="Jij-E8-TNS" secondAttribute="bottom" constant="20" id="YAQ-vP-epn"/>
+                            <constraint firstItem="Ifq-iT-OUL" firstAttribute="top" secondItem="zXs-nw-ILD" secondAttribute="bottom" constant="20" id="ZkP-cv-SjQ"/>
+                            <constraint firstItem="zXs-nw-ILD" firstAttribute="top" secondItem="Jij-E8-TNS" secondAttribute="bottom" constant="21" id="gC1-YK-idH"/>
+                            <constraint firstItem="cQK-XP-1NN" firstAttribute="top" secondItem="wLV-Ym-yv9" secondAttribute="top" constant="15" id="ieb-BR-FdP"/>
                             <constraint firstItem="gKQ-Lb-9LR" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="139" id="j9K-cf-cHv"/>
+                            <constraint firstItem="aJj-xL-m0U" firstAttribute="top" secondItem="gKQ-Lb-9LR" secondAttribute="bottom" constant="21" id="jIT-le-MYP"/>
+                            <constraint firstItem="cQK-XP-1NN" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="15" id="lfV-J7-Lga"/>
                             <constraint firstAttribute="bottom" secondItem="21a-b4-qWg" secondAttribute="bottom" constant="20" id="mRY-fE-2gk"/>
-                            <constraint firstItem="v2D-c0-dMw" firstAttribute="top" secondItem="wLV-Ym-yv9" secondAttribute="top" constant="38" id="pn8-i5-RsK"/>
+                            <constraint firstItem="rtZ-hC-nQI" firstAttribute="leading" secondItem="wLV-Ym-yv9" secondAttribute="leading" constant="139" id="pW8-ZD-GvM"/>
+                            <constraint firstItem="IEC-f9-BZV" firstAttribute="top" secondItem="2rs-vV-nhn" secondAttribute="bottom" constant="20" id="tvm-sS-wmb"/>
                             <constraint firstAttribute="trailing" secondItem="gKQ-Lb-9LR" secondAttribute="trailing" constant="139" id="ukv-14-26e"/>
                             <constraint firstAttribute="trailing" secondItem="21a-b4-qWg" secondAttribute="trailing" constant="20" id="xH0-q1-R6X"/>
                         </constraints>
@@ -710,24 +767,29 @@
                     <connections>
                         <outlet property="authButton" destination="gKQ-Lb-9LR" id="U8C-cI-1d1"/>
                         <outlet property="closeButton" destination="21a-b4-qWg" id="iLq-KR-SuO"/>
-                        <outlet property="image" destination="v2D-c0-dMw" id="qir-ze-c70"/>
+                        <outlet property="darkthemeCheckbox" destination="aJj-xL-m0U" id="IfI-6c-LCd"/>
+                        <outlet property="darkthemeLabel" destination="Ifq-iT-OUL" id="u3g-8I-UQE"/>
+                        <outlet property="descriptionLabel" destination="cQK-XP-1NN" id="ksP-pi-IzT"/>
+                        <outlet property="gistToolVersion" destination="2rs-vV-nhn" id="Vdd-8X-uzz"/>
+                        <outlet property="gisttoolVersionLabel" destination="rtZ-hC-nQI" id="rNu-w2-Llu"/>
                         <outlet property="signInLabel" destination="zXs-nw-ILD" id="XvZ-Oi-BJ3"/>
+                        <outlet property="upgradeButton" destination="i19-On-sJd" id="GOF-KH-2ks"/>
                     </connections>
                 </viewController>
                 <customObject id="pp6-7t-xat" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1257" y="657"/>
+            <point key="canvasLocation" x="1257" y="678"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="GistTool" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="378"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView misplaced="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="72" horizontalPageScroll="10" verticalLineScroll="72" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="msn-bN-iTn">
-                                <rect key="frame" x="15" y="80" width="450" height="177"/>
+                                <rect key="frame" x="15" y="186" width="450" height="177"/>
                                 <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="A68-Yw-vtj">
                                     <rect key="frame" x="0.0" y="0.0" width="450" height="177"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -831,8 +893,8 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <button identifier="authButton" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pGj-Co-Nb8" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
-                                <rect key="frame" x="448" y="15" width="17" height="32"/>
+                            <button identifier="authButton" toolTip="Settings" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pGj-Co-Nb8" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="448" y="121" width="17" height="32"/>
                                 <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" alignment="center" inset="2" id="dgf-Nv-Z7z">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system" size="26"/>
@@ -841,8 +903,8 @@
                                     <action selector="authButtonClicked:" target="XfG-lQ-9wD" id="qZk-bN-3be"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ylG-85-dMZ" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
-                                <rect key="frame" x="414" y="15" width="17" height="32"/>
+                            <button toolTip="Refresh gist from github" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ylG-85-dMZ" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="414" y="121" width="17" height="32"/>
                                 <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="Xix-Et-XXU">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system" size="25"/>
@@ -852,17 +914,17 @@
                                 </connections>
                             </button>
                             <imageView identifier="avatar" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P9a-mK-h1W" userLabel="Avatar image">
-                                <rect key="frame" x="15" y="17" width="30" height="30"/>
+                                <rect key="frame" x="15" y="123" width="30" height="30"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="IuI-rp-cZS"/>
                             </imageView>
                             <box verticalHuggingPriority="750" misplaced="YES" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="KEq-U7-eLc" customClass="Line" customModule="GistTool" customModuleProvider="target">
-                                <rect key="frame" x="15" y="62" width="450" height="5"/>
+                                <rect key="frame" x="15" y="168" width="450" height="5"/>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <button horizontalHuggingPriority="249" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eFG-SQ-v8r">
-                                <rect key="frame" x="30" y="17" width="154" height="32"/>
+                                <rect key="frame" x="30" y="123" width="154" height="32"/>
                                 <buttonCell key="cell" type="bevel" title="Not signed in" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="fGZ-WX-YZn">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -872,7 +934,7 @@
                                 </connections>
                             </button>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ghb-aa-POP">
-                                <rect key="frame" x="138" y="18" width="232" height="22"/>
+                                <rect key="frame" x="138" y="124" width="232" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="Drq-2k-prQ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -882,8 +944,8 @@
                                     <action selector="didSearch:" target="XfG-lQ-9wD" id="1DU-6o-N5e"/>
                                 </connections>
                             </searchField>
-                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UBz-W9-jWc" userLabel="New Button" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
-                                <rect key="frame" x="382" y="15" width="17" height="32"/>
+                            <button toolTip="Create new gist" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UBz-W9-jWc" userLabel="New Button" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="382" y="121" width="17" height="32"/>
                                 <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="c2C-15-gah">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system" size="25"/>
@@ -892,6 +954,19 @@
                                     <action selector="newGist:" target="XfG-lQ-9wD" id="xEs-rj-7X3"/>
                                 </connections>
                             </button>
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="7LB-2j-ofs">
+                                <rect key="frame" x="449" y="162" width="16" height="16"/>
+                                <contentFilters>
+                                    <ciFilter name="CIColorControls">
+                                        <configuration>
+                                            <real key="inputBrightness" value="1"/>
+                                            <real key="inputContrast" value="1"/>
+                                            <null key="inputImage"/>
+                                            <real key="inputSaturation" value="1"/>
+                                        </configuration>
+                                    </ciFilter>
+                                </contentFilters>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
                             <constraint firstItem="KEq-U7-eLc" firstAttribute="top" secondItem="msn-bN-iTn" secondAttribute="bottom" constant="15" id="1Ur-JM-Zrn"/>
@@ -909,10 +984,12 @@
                             <constraint firstItem="ylG-85-dMZ" firstAttribute="top" secondItem="KEq-U7-eLc" secondAttribute="bottom" constant="15" id="YWX-ZY-Y78"/>
                             <constraint firstAttribute="bottom" secondItem="ylG-85-dMZ" secondAttribute="bottom" constant="15" id="cc0-Kh-IrB"/>
                             <constraint firstItem="msn-bN-iTn" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="15" id="ddM-RB-DFX"/>
+                            <constraint firstAttribute="trailing" secondItem="7LB-2j-ofs" secondAttribute="trailing" constant="15" id="dsS-TH-6Hh"/>
                             <constraint firstAttribute="bottom" secondItem="eFG-SQ-v8r" secondAttribute="bottom" constant="15" id="hIC-Bw-1tg"/>
                             <constraint firstItem="ylG-85-dMZ" firstAttribute="leading" secondItem="UBz-W9-jWc" secondAttribute="trailing" constant="15" id="lRb-vI-edf"/>
                             <constraint firstAttribute="trailing" secondItem="pGj-Co-Nb8" secondAttribute="trailing" constant="15" id="wgf-O7-YaV"/>
                             <constraint firstAttribute="bottom" secondItem="ghb-aa-POP" secondAttribute="bottom" constant="18" id="xlB-EI-riM"/>
+                            <constraint firstItem="pGj-Co-Nb8" firstAttribute="top" secondItem="7LB-2j-ofs" secondAttribute="bottom" constant="5" id="ysf-Zg-czF"/>
                             <constraint firstItem="ghb-aa-POP" firstAttribute="leading" secondItem="eFG-SQ-v8r" secondAttribute="trailing" constant="21" id="zDP-GD-mG3"/>
                         </constraints>
                     </view>
@@ -925,12 +1002,13 @@
                         <outlet property="searchField" destination="ghb-aa-POP" id="uiV-HV-RQL"/>
                         <outlet property="searchFieldCell" destination="Drq-2k-prQ" id="Eqw-5W-4cm"/>
                         <outlet property="settingsButton" destination="pGj-Co-Nb8" id="cew-ox-29p"/>
+                        <outlet property="spinner" destination="7LB-2j-ofs" id="aEZ-X1-FcF"/>
                         <outlet property="username" destination="eFG-SQ-v8r" id="Z6B-EG-rj6"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="656"/>
+            <point key="canvasLocation" x="75" y="709"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="rM3-BJ-xD9">
@@ -968,14 +1046,14 @@
                                     <action selector="closeModal:" target="ded-rZ-dft" id="TSo-J4-N3D"/>
                                 </connections>
                             </button>
-                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="202" horizontalPageScroll="10" verticalLineScroll="202" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g71-MH-rN2">
-                                <rect key="frame" x="0.0" y="62" width="534" height="254"/>
+                            <scrollView misplaced="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="202" horizontalPageScroll="10" verticalLineScroll="202" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g71-MH-rN2">
+                                <rect key="frame" x="0.0" y="70" width="534" height="246"/>
                                 <clipView key="contentView" id="z9W-an-iKB">
-                                    <rect key="frame" x="0.0" y="0.0" width="534" height="254"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="534" height="246"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView identifier="filesTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="200" rowSizeStyle="automatic" viewBased="YES" id="pEm-AC-OgM">
-                                            <rect key="frame" x="0.0" y="0.0" width="534" height="254"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="534" height="246"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -998,20 +1076,20 @@
                                                             <rect key="frame" x="1" y="1" width="531" height="200"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <scrollView misplaced="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cay-wv-CWO">
-                                                                    <rect key="frame" x="5" y="0.0" width="491" height="162"/>
+                                                                <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cay-wv-CWO">
+                                                                    <rect key="frame" x="0.0" y="10" width="531" height="152"/>
                                                                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ySC-2x-Az6">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="491" height="162"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="531" height="152"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <textView drawsBackground="NO" importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" id="FMF-Yb-4a7" customClass="FileTextView" customModule="GistTool" customModuleProvider="target">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="491" height="162"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="531" height="152"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                                <size key="minSize" width="491" height="162"/>
+                                                                                <size key="minSize" width="531" height="152"/>
                                                                                 <size key="maxSize" width="531" height="10000000"/>
                                                                                 <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <size key="minSize" width="491" height="162"/>
+                                                                                <size key="minSize" width="531" height="152"/>
                                                                                 <size key="maxSize" width="531" height="10000000"/>
                                                                             </textView>
                                                                         </subviews>
@@ -1022,7 +1100,7 @@
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                     </scroller>
                                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="BwQ-dZ-MeL">
-                                                                        <rect key="frame" x="475" y="0.0" width="16" height="162"/>
+                                                                        <rect key="frame" x="515" y="0.0" width="16" height="152"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                     </scroller>
                                                                 </scrollView>
@@ -1097,7 +1175,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Jbh-9l-run">
-                                    <rect key="frame" x="0.0" y="143" width="504" height="16"/>
+                                    <rect key="frame" x="0.0" y="230" width="534" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="cNv-eF-Z9w">
@@ -1105,7 +1183,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qmD-w4-k5U" customClass="EditableTextField" customModule="GistTool" customModuleProvider="target">
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="qmD-w4-k5U" customClass="EditableTextField" customModule="GistTool" customModuleProvider="target">
                                 <rect key="frame" x="15" y="356" width="504" height="50"/>
                                 <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" placeholderString="Description" drawsBackground="YES" id="kR9-dU-rl6">
                                     <font key="font" metaFont="system"/>
@@ -1121,8 +1199,8 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button toolTip="Save Gist" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WUl-GV-hze" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
-                                <rect key="frame" x="502" y="15" width="17" height="32"/>
+                            <button toolTip="Save Gist" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WUl-GV-hze" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="502" y="16" width="17" height="25"/>
                                 <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="SCz-aU-Ofy">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system" size="25"/>
@@ -1131,30 +1209,83 @@
                                     <action selector="save:" target="ded-rZ-dft" id="PVW-rG-Yb9"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9TH-zN-hUb" customClass="FontAwesomeButton" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="218" y="16" width="99" height="25"/>
+                                <buttonCell key="cell" type="bevel" title="*" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="8wx-nB-l9q">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system" size="25"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="addFile:" target="ded-rZ-dft" id="pEW-Wd-SRc"/>
+                                </connections>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="0CF-a6-nUT">
+                                <rect key="frame" x="394" y="20" width="90" height="18"/>
+                                <buttonCell key="cell" type="check" title="Secret Gist" bezelStyle="regularSquare" imagePosition="right" alignment="left" state="on" inset="2" id="3RI-bU-XnL">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="secretGistClicked:" target="ded-rZ-dft" id="yls-cZ-vJQ"/>
+                                </connections>
+                            </button>
+                            <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="jHa-WT-WDN" customClass="Line" customModule="GistTool" customModuleProvider="target">
+                                <rect key="frame" x="15" y="52" width="504" height="5"/>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="jlg-Za-2Xj">
+                                <rect key="frame" x="503" y="46" width="16" height="16"/>
+                                <contentFilters>
+                                    <ciFilter name="CIColorControls">
+                                        <configuration>
+                                            <real key="inputBrightness" value="1"/>
+                                            <real key="inputContrast" value="1"/>
+                                            <null key="inputImage"/>
+                                            <real key="inputSaturation" value="1"/>
+                                        </configuration>
+                                    </ciFilter>
+                                </contentFilters>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="jlg-Za-2Xj" secondAttribute="trailing" constant="15" id="1fO-1K-EfV"/>
+                            <constraint firstItem="WUl-GV-hze" firstAttribute="top" secondItem="jlg-Za-2Xj" secondAttribute="bottom" constant="5" id="5LT-tY-1L3"/>
+                            <constraint firstItem="jHa-WT-WDN" firstAttribute="leading" secondItem="SgM-rV-6rm" secondAttribute="leading" constant="15" id="5gn-wm-WqR"/>
+                            <constraint firstAttribute="bottom" secondItem="jHa-WT-WDN" secondAttribute="bottom" constant="54" id="6d0-vG-YXK"/>
                             <constraint firstAttribute="bottom" secondItem="jfT-d0-8LE" secondAttribute="bottom" constant="15" id="8qd-57-Pdb"/>
+                            <constraint firstAttribute="trailing" secondItem="jHa-WT-WDN" secondAttribute="trailing" constant="15" id="BCM-8o-lvK"/>
                             <constraint firstItem="g71-MH-rN2" firstAttribute="leading" secondItem="SgM-rV-6rm" secondAttribute="leading" id="BKW-bS-brB"/>
                             <constraint firstAttribute="bottom" secondItem="WUl-GV-hze" secondAttribute="bottom" constant="15" id="DAs-mE-DQt"/>
                             <constraint firstItem="2ko-aM-FTn" firstAttribute="leading" secondItem="SgM-rV-6rm" secondAttribute="leading" constant="15" id="JEV-S0-NnI"/>
+                            <constraint firstAttribute="trailing" secondItem="9TH-zN-hUb" secondAttribute="trailing" constant="217" id="L2a-Da-KKG"/>
                             <constraint firstItem="g71-MH-rN2" firstAttribute="top" secondItem="2ko-aM-FTn" secondAttribute="bottom" constant="15" id="Ltn-3u-YYJ"/>
+                            <constraint firstItem="qmD-w4-k5U" firstAttribute="top" secondItem="SgM-rV-6rm" secondAttribute="top" constant="20" id="LzJ-lk-tNL"/>
+                            <constraint firstItem="WUl-GV-hze" firstAttribute="leading" secondItem="0CF-a6-nUT" secondAttribute="trailing" constant="20" id="O9x-Pj-AfU"/>
                             <constraint firstItem="jfT-d0-8LE" firstAttribute="leading" secondItem="SgM-rV-6rm" secondAttribute="leading" constant="15" id="Twn-lF-2he"/>
                             <constraint firstAttribute="trailing" secondItem="WUl-GV-hze" secondAttribute="trailing" constant="15" id="Vqd-IB-n8e"/>
                             <constraint firstItem="jfT-d0-8LE" firstAttribute="top" secondItem="g71-MH-rN2" secondAttribute="bottom" constant="15" id="XWL-f1-SvS"/>
                             <constraint firstItem="2ko-aM-FTn" firstAttribute="top" secondItem="qmD-w4-k5U" secondAttribute="bottom" constant="8" symbolic="YES" id="YAb-15-DgZ"/>
                             <constraint firstAttribute="trailing" secondItem="2ko-aM-FTn" secondAttribute="trailing" constant="15" id="aDm-D4-zew"/>
                             <constraint firstItem="2ko-aM-FTn" firstAttribute="top" secondItem="SgM-rV-6rm" secondAttribute="top" constant="78" id="gZn-la-ZHF"/>
+                            <constraint firstItem="9TH-zN-hUb" firstAttribute="leading" secondItem="SgM-rV-6rm" secondAttribute="leading" constant="218" id="mO5-Y3-PVy"/>
                             <constraint firstItem="2ko-aM-FTn" firstAttribute="leading" secondItem="qmD-w4-k5U" secondAttribute="leading" id="nRs-Sr-LBV"/>
                             <constraint firstItem="2ko-aM-FTn" firstAttribute="trailing" secondItem="qmD-w4-k5U" secondAttribute="trailing" id="qlA-Li-vzF"/>
+                            <constraint firstAttribute="bottom" secondItem="9TH-zN-hUb" secondAttribute="bottom" constant="15" id="uZM-fE-suh"/>
+                            <constraint firstAttribute="bottom" secondItem="0CF-a6-nUT" secondAttribute="bottom" constant="22" id="x2C-qu-14g"/>
                             <constraint firstAttribute="trailing" secondItem="g71-MH-rN2" secondAttribute="trailing" id="yOD-hv-Q00"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addFileButton" destination="9TH-zN-hUb" id="NcS-Vd-NW9"/>
                         <outlet property="closeButton" destination="jfT-d0-8LE" id="6vV-Uo-kzV"/>
                         <outlet property="dateLabel" destination="2ko-aM-FTn" id="dKs-tP-ij5"/>
                         <outlet property="descriptionText" destination="qmD-w4-k5U" id="9LD-cM-2c6"/>
                         <outlet property="filesTableView" destination="pEm-AC-OgM" id="8du-1b-ckG"/>
+                        <outlet property="loadingSpinner" destination="jlg-Za-2Xj" id="vJB-8s-Btu"/>
                         <outlet property="saveButton" destination="WUl-GV-hze" id="L5v-uD-Zrh"/>
+                        <outlet property="secretGistCheckbox" destination="0CF-a6-nUT" id="dYt-KO-tff"/>
                     </connections>
                 </viewController>
                 <customObject id="HgC-EE-osr" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1168,7 +1299,7 @@
                     <window key="window" title="GistTool Pro Edition" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="fLD-oD-J3f">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="245" y="301" width="480" height="270"/>
+                        <rect key="contentRect" x="610" y="407" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                     </window>
                     <connections>
@@ -1188,21 +1319,43 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YOa-gF-7T4">
-                                <rect key="frame" x="18" y="59" width="444" height="111"/>
+                                <rect key="frame" x="102" y="62" width="360" height="150"/>
                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="EqQ-Fd-6TZ">
                                     <font key="font" metaFont="system"/>
                                     <string key="title">GistTool Pro edition offers a set of features to help you get the most out of your Gists. 
 
-* Search your gists
+* Search your gists and files
 * Create secrets gists
 * Darktheme</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Btn-jI-B5C">
+                                <rect key="frame" x="382" y="13" width="87" height="32"/>
+                                <buttonCell key="cell" type="push" title="Restore" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oa5-gd-0JI">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="restoreClicked:" target="76h-Zp-nHZ" id="gqy-Tk-59G"/>
+                                </connections>
+                            </button>
+                            <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z1b-XR-UaF">
+                                <rect key="frame" x="20" y="178" width="76" height="72"/>
+                                <imageCell key="cell" controlSize="mini" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="gisttool-icon_256" id="fVL-on-i4l"/>
+                            </imageView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Evw-li-AgL">
+                                <rect key="frame" x="102" y="220" width="337" height="24"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="2XL-Nh-zDF">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xbW-YC-WLk">
-                                <rect key="frame" x="158" y="13" width="166" height="32"/>
-                                <buttonCell key="cell" type="push" title="Purchase Pro Edition" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hw9-9P-Agv">
+                                <rect key="frame" x="98" y="13" width="284" height="32"/>
+                                <buttonCell key="cell" type="push" title="Purchase Pro Edition" bezelStyle="rounded" image="NSGoRightTemplate" imagePosition="right" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hw9-9P-Agv">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1210,30 +1363,12 @@
                                     <action selector="purchase:" target="76h-Zp-nHZ" id="Gff-Ot-Yx7"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Btn-jI-B5C">
-                                <rect key="frame" x="382" y="13" width="87" height="32"/>
-                                <buttonCell key="cell" type="push" title="Restore" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oa5-gd-0JI">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                            <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z1b-XR-UaF">
-                                <rect key="frame" x="20" y="178" width="76" height="72"/>
-                                <imageCell key="cell" controlSize="mini" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="gisttool-icon_256" id="fVL-on-i4l"/>
-                            </imageView>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Evw-li-AgL">
-                                <rect key="frame" x="102" y="196" width="337" height="36"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="2XL-Nh-zDF">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="descriptionLabel" destination="YOa-gF-7T4" id="cBo-Z6-9y8"/>
                         <outlet property="purchaseButton" destination="xbW-YC-WLk" id="dva-Qk-aLS"/>
+                        <outlet property="restoreButton" destination="Btn-jI-B5C" id="K4O-do-fs5"/>
                         <outlet property="titleLabel" destination="Evw-li-AgL" id="uqM-dc-bDn"/>
                     </connections>
                 </viewController>
@@ -1243,7 +1378,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="NSStopProgressTemplate" width="11" height="11"/>
+        <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="gisttool-icon_256" width="256" height="256"/>
     </resources>
 </document>

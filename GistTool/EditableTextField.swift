@@ -18,6 +18,7 @@ class EditableTextField: NSTextField {
             if let textField = self.window?.fieldEditor(true, forObject: self) as? NSTextView {
                 if textField.respondsToSelector(Selector("setInsertionPointColor:")) {
                     textField.setSelectedRange(NSRange(location: (textField.textStorage?.string.characters.count)!, length: 0))
+                    textField.backgroundColor = ViewController.getBackgroundColor()
                     textField.insertionPointColor = ViewController.getLightTextColor()
                 }
             }

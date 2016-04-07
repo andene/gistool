@@ -22,7 +22,7 @@ class GithubLoader {
         "authorize_uri": "https://github.com/login/oauth/authorize",
         "token_uri": "https://github.com/login/oauth/access_token",
         "scope": "user gist",
-        "redirect_uris": ["iamkgistool://oauth/callback"],
+        "redirect_uris": ["viftio://oauth/callback"],
         "keychain": true,
         "title": "GistTool",
         "secret_in_body": true,
@@ -50,84 +50,93 @@ class GithubLoader {
         
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithRequest(request) { data, response, error in
+                
+                
                 if nil != error {
                     dispatch_async(dispatch_get_main_queue()) {
                         callback(gists: nil, error: error)
                     }
+                } else if (data == nil) {
+                        callback(gists: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "User not authorized"]))
+                    
                 } else {
                     do {
+                        
+                        
                         let jsonGists = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [NSDictionary]
                         dispatch_async(dispatch_get_main_queue()) {
                             
+                            
                             let gists = [Gist]()
-                            for gist in jsonGists! {
-                                
-                                guard let id = gist["id"] as? String,
-                                    let updatedAt = gist["updated_at"] as? String
-                                    else {
-                                        callback(gists: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
-                                        break
-                                }
-                                
-                                // Check if Gist exist in database
-                                let realm = try! Realm()
-                                
-                                if let gistRecord = realm.objects(Gist).filter("gistId == %@", id).first {
+                            if let jsonGists = jsonGists {
+                                for gist in jsonGists {
                                     
-                                    let updatedDate = self.getDateFromString(updatedAt)
+                                    guard let id = gist["id"] as? String,
+                                        let updatedAt = gist["updated_at"] as? String
+                                        else {
+                                            callback(gists: nil, error: NSError(domain: "iamk", code: 0, userInfo: ["error": "No gists found"]))
+                                            break
+                                    }
                                     
-                                    let dateCompare = updatedDate.compare(gistRecord.updatedAt!)
-                                    if dateCompare == NSComparisonResult.OrderedDescending {
-                                        print("Gist is updated, replace: \(gistRecord.gistDescription)")
+                                    // Check if Gist exist in database
+                                    let realm = try! Realm()
+                                    
+                                    if let gistRecord = realm.objects(Gist).filter("gistId == %@", id).first {
                                         
-                                        // Add the gist again
+                                        let updatedDate = self.getDateFromString(updatedAt)
+                                        
+                                        let dateCompare = updatedDate.compare(gistRecord.updatedAt!)
+                                        if dateCompare == NSComparisonResult.OrderedDescending {
+                                            print("Gist is updated, replace: \(gistRecord.gistDescription)")
+                                            
+                                            // Add the gist again
+                                            if let newGist = self.createGistFromJSON(gist, callback: callback) {
+                                                
+                                                // If we could update the gist, delete all files before adding them
+                                                self.deleteGistFiles(gistRecord)
+                                                
+                                                
+                                                self.createGistItem(newGist)
+                                                let url = "gists/" + id
+                                                
+                                                self.requestGistFiles(url) { gistFiles, error in
+                                                    if let foundGistFiles = gistFiles {
+                                                        for file in foundGistFiles {
+                                                            try! realm.write() {
+                                                                gistRecord.files.append(file)
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                }
+                                            }
+                                        }
+                                        
+                                        
+                                    } else  {
                                         if let newGist = self.createGistFromJSON(gist, callback: callback) {
-                                            
-                                            // If we could update the gist, delete all files before adding them
-                                            self.deleteGistFiles(gistRecord)
-                                            
-                                            
                                             self.createGistItem(newGist)
                                             let url = "gists/" + id
                                             
-                                            self.requestGistFiles(url) { gistFiles, error in
-                                                if let foundGistFiles = gistFiles {
-                                                    for file in foundGistFiles {
-                                                        try! realm.write() {
-                                                            gistRecord.files.append(file)
+                                            if let gistRecord = realm.objects(Gist).filter("gistId == %@", id).first {
+                                                self.requestGistFiles(url) { gistFiles, error in
+                                                    if nil != error {
+                                                        print("Error \(error)")
+                                                    } else {
+                                                        for file in gistFiles! {
+                                                            try! realm.write() {
+                                                                gistRecord.files.append(file)
+                                                            }
                                                         }
                                                     }
+                                                    
                                                 }
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                    
-                                } else  {
-                                    if let newGist = self.createGistFromJSON(gist, callback: callback) {
-                                        self.createGistItem(newGist)
-                                        let url = "gists/" + id
-                                        
-                                        if let gistRecord = realm.objects(Gist).filter("gistId == %@", id).first {
-                                            self.requestGistFiles(url) { gistFiles, error in
-                                                if nil != error {
-                                                    print("Error \(error)")
-                                                } else {
-                                                    for file in gistFiles! {
-                                                        try! realm.write() {
-                                                            gistRecord.files.append(file)
-                                                        }
-                                                    }
-                                                }
-                                                
                                             }
                                         }
                                     }
                                 }
                             }
-                            
-                        callback(gists: gists, error: nil)
+                            callback(gists: gists, error: nil)
                         }
                     }
                     catch let error {

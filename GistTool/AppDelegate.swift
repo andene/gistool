@@ -11,8 +11,11 @@ import p2_OAuth2
 import RealmSwift
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDelegate {
 
+    @IBOutlet weak var MainMenu: NSMenu!
+    
+    
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         
         
@@ -35,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
      */
     func handleURLEvent(event: NSAppleEventDescriptor, withReply reply: NSAppleEventDescriptor) {
         if let urlString = event.paramDescriptorForKeyword(AEKeyword(keyDirectObject))?.stringValue {
-            if let url = NSURL(string: urlString) where "iamkgistool" == url.scheme && "oauth" == url.host {
+            if let url = NSURL(string: urlString) where "viftio" == url.scheme && "oauth" == url.host {
                 NSNotificationCenter.defaultCenter().postNotificationName(OAuth2AppDidReceiveCallbackNotification, object: url)
             }
         }
@@ -46,6 +49,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     }
 
+    @IBAction func emptyLocalCache(sender: AnyObject) {
+        let realm = try! Realm()
+        try! realm.write() {
+            realm.deleteAll()
+            
+            let notification = NSUserNotification()
+            notification.title = "Local cache emptied"
+            let notificationCenter = NSUserNotificationCenter.defaultUserNotificationCenter()
+            notificationCenter.delegate = self
+            notificationCenter.deliverNotification(notification)
+        }
+    }
 
+    
+    /**
+     * When preferences is clicked, send a notification
+     */
+    @IBAction func preferencesClicked(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName(OpenSettingsNotification, object: [])
+    }
+    
+    @IBAction func buyProClicked(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName(OpenGoProNotification, object: [])
+    }
+    
+    @IBAction func helpClicked(sender: AnyObject) {
+        let url = NSURL(string: "http://vift.io/gisttool")
+        NSWorkspace.sharedWorkspace().openURL(url!)
+    }
+    
+    
+    func userNotificationCenter(center: NSUserNotificationCenter, shouldPresentNotification notification: NSUserNotification) -> Bool {
+        return true
+    }
+    
 }
 

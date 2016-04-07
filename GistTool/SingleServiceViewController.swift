@@ -13,47 +13,125 @@ import RealmSwift
 class SingleServiceViewController: NSViewController {
     
     var loader: GithubLoader!
+    var isSignedIn = false
+    var user: NSDictionary!
     
-
     @IBOutlet weak var authButton: NSButton!
     @IBOutlet weak var label: NSTextField!
     @IBOutlet weak var signInLabel: NSTextField!
     @IBOutlet weak var closeButton: FontAwesomeButton!
+    @IBOutlet weak var upgradeButton: NSButton!
     
-    @IBOutlet weak var image: NSImageView!
+    @IBOutlet weak var gistToolVersion: NSTextField!
+    @IBOutlet weak var gisttoolVersionLabel: NSTextField!
+    
+    @IBOutlet weak var descriptionLabel: NSTextField!
+    @IBOutlet weak var darkthemeLabel: NSTextField!
+    @IBOutlet weak var darkthemeCheckbox: NSButton!
     
     override func viewDidLoad() {
         self.view.wantsLayer = true
         
-        signInLabel.useLatoWithSize(CGFloat(13.0),  bold: false)
-        //closeButton.updateTitle("\u{f00d}", fontSize: 22.0)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.handlePurchasedPro), name: GistToolPuchasedPro, object: nil)
+        
+        
+        setupElements()
+        handlePro()
         
         let userDefault = NSUserDefaults.standardUserDefaults()
-        if let firstTime = userDefault.boolForKey("firstTimeRunning") as? Bool{
+        if userDefault.boolForKey("firstTimeRunning") {
             
+        }
+        
+        
+        if userDefault.boolForKey("darkTheme") {
+            darkthemeCheckbox.integerValue = 1
+        }
+        
+        
+        
+    }
+    
+    func handlePro() {
+        if NSUserDefaults.standardUserDefaults().boolForKey("isPro") {
+            gisttoolVersionLabel.stringValue = "Pro edition"
+            upgradeButton.hidden = true
+        }
+    }
+    
+    
+    // Called when a notification of purchase is made
+    func handlePurchasedPro() {
+        handlePro()
+    }
+    
+    
+    func setupElements() {
+        let backgroundColor = ViewController.getBackgroundColor()
+        view.layer?.backgroundColor = backgroundColor.CGColor
+        
+        signInLabel.useLatoWithSize(CGFloat(14.0),  bold: false)
+        closeButton.updateTitle("\u{f00d} Close", fontSize: 16.0)
+        
+        gisttoolVersionLabel.useLatoWithSize(14.0, bold: false)
+        gistToolVersion.useLatoWithSize(14.0, bold: false)
+        
+        darkthemeLabel.useLatoWithSize(14.0, bold: false)
+        darkthemeCheckbox.currentEditor()?.textColor = ViewController.getLightTextColor()
+        
+        descriptionLabel.useLatoWithSize(14, bold: false)
+        
+        setupWelcomeText()
+        setupCheckbox()
+    }
+    
+    func setupCheckbox() {
+        
+        let titleFont = NSFont(name: "Lato", size: 14.0)
+        
+        let pstyle = NSMutableParagraphStyle()
+        
+        let attributedTitle = NSAttributedString(string: "Enable Dark theme", attributes: [
+            NSForegroundColorAttributeName : ViewController.getMediumTextColor(),
+            NSParagraphStyleAttributeName : pstyle,
+            NSFontAttributeName: titleFont!
+            
+            ])
+        
+        self.darkthemeCheckbox.attributedTitle = attributedTitle
+    }
+    
+    func setupWelcomeText() {
+        if !isSignedIn {
+            descriptionLabel.stringValue = "To get started with GistTool you need to log in to your Github account. Click sign in below to get started!"
+        } else {
+            
+            if let username = user["login"] {
+                self.descriptionLabel.stringValue = "Signed in as: \(username)"
+            }
         }
         
     }
     
     override func viewDidAppear() {
-
-        let image = NSImage(named: "GitHub_Logo")
-        image!.size = NSSize(width: 260, height: 100)
-        self.image?.image = image
-
         
         if loader.isAuthorized() {
-            signInLabel.stringValue = "Signed in using"
+            
+            signInLabel.stringValue = "Signed in"
+            loader.requestUserdata() { dict, error in
+                
+                if let userDict = dict {
+                    self.user = userDict
+                    self.isSignedIn = true
+                    self.setupWelcomeText()
+                }
+            }
             authButton?.title = "Sign out"
         }
     }
     
     override func viewWillAppear() {
-        view.layer?.backgroundColor = NSColor.whiteColor().CGColor
-    }
-    
-    @IBAction func emptyDatabase(sender: AnyObject) {
-        deleteAllObjectsInDatabase()
+        setupElements()
     }
     
     func deleteAllObjectsInDatabase() {
@@ -101,6 +179,27 @@ class SingleServiceViewController: NSViewController {
         
     }
     
+    @IBAction func toggleDarkTheme(sender: AnyObject) {
+        
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        
+        if !userDefaults.boolForKey("isPro") {
+            darkthemeCheckbox.integerValue = 0
+            NSNotificationCenter.defaultCenter().postNotificationName(OpenGoProNotification, object: [])
+        
+        } else {
+            if darkthemeCheckbox.integerValue == 1 {
+                userDefaults.setBool(true, forKey: "darkTheme")
+            } else {
+                userDefaults.setBool(false, forKey: "darkTheme")
+            }
+            setupElements()
+            NSNotificationCenter.defaultCenter().postNotificationName(DarkThemeChangedNotification, object: [])
+            
+        }
+        
+        
+    }
     
     @IBAction func beginAuth(sender: NSButton) {
 
@@ -130,7 +229,7 @@ class SingleServiceViewController: NSViewController {
         } else {
             self.authorizeComplete()
         }
-        authButton?.title = "Sign in"
+        authButton?.title = "Sign in with Github"
         authButton?.enabled = true
         
     }
@@ -145,6 +244,9 @@ class SingleServiceViewController: NSViewController {
         }
     }
     
+    @IBAction func upgradeToProClicked(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName(OpenGoProNotification, object: [])
+    }
     func authorizeComplete() {
         
         view.window!.sheetParent?.endSheet(self.view.window!, returnCode: NSModalResponseOK)
